@@ -1,0 +1,186 @@
+{
+  "format": "cats-net",
+  "version": "1.0.0",
+  "savedAt": "2026-08-19T13:48:05.173Z",
+  "nodes": [
+    {
+      "id": "risk",
+      "name": "风险",
+      "type": "abstract",
+      "attributes": {
+        "danger": 0.8
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "stop_loss",
+          "weight": 0.9,
+          "type": "causal",
+          "bidirectional": true
+        },
+        {
+          "targetId": "position",
+          "weight": 0.7,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": []
+    },
+    {
+      "id": "stop_loss",
+      "name": "止损",
+      "type": "action",
+      "attributes": {
+        "urgency": 0.9
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 1,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.45,
+          "sourceId": "risk",
+          "activation": 0.45
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.45,
+          "sourceId": "risk",
+          "activation": 0.9
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.45,
+          "sourceId": "risk",
+          "activation": 1
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.45,
+          "sourceId": "risk",
+          "activation": 1
+        },
+        {
+          "ts": 1787147285170,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mem_mt05cmnm_1",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "position",
+      "name": "仓位",
+      "type": "abstract",
+      "attributes": {
+        "size": 0.3
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.35,
+          "sourceId": "risk",
+          "activation": 0.35
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.35,
+          "sourceId": "risk",
+          "activation": 0.7
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.35,
+          "sourceId": "risk",
+          "activation": 1
+        },
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.35,
+          "sourceId": "risk",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "market_drop",
+      "name": "市场下跌",
+      "type": "entity",
+      "attributes": {
+        "severity": 0.39999999999999997
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 1,
+      "connections": [
+        {
+          "targetId": "risk",
+          "weight": 0.85,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": []
+    },
+    {
+      "id": "volatility",
+      "name": "波动率",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.8,
+      "confidence": 1,
+      "granularity": 1,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787147285168,
+          "op": "activate",
+          "amount": 0.8,
+          "sourceId": "seed",
+          "activation": 0.8
+        }
+      ]
+    }
+  ],
+  "memory": [
+    {
+      "id": "mem_mt05cmnm_1",
+      "label": "市场下跌应对",
+      "content": "观察到市场下跌，评估风险并触发止损",
+      "concepts": [
+        "market_drop",
+        "risk",
+        "stop_loss"
+      ],
+      "activationPattern": {
+        "market_drop": 1,
+        "risk": 1,
+        "stop_loss": 1
+      },
+      "strength": 0.9,
+      "timestamp": 1787147285170
+    }
+  ],
+  "meta": {
+    "nodeCount": 5,
+    "memoryCount": 1
+  }
+}

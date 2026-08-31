@@ -1,0 +1,17 @@
+{
+  "name": "gina-agent",
+  "version": "0.1.0",
+  "description": "Gina Agent 后端核心 —— CATS-Net 类脑抽象空间内核 + 记忆系统 + 状态机 + MCP 工具调度 + 股票交易核心 + 毫米波SOS急救",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "node --test tests/",
+    "test:cats-net": "node --test tests/cats-net.test.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "private": true
+}

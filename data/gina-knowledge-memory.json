@@ -1,0 +1,2400 @@
+{
+  "format": "gina-memory",
+  "version": "1.0.0",
+  "savedAt": "2026-08-19T15:22:18.591Z",
+  "working": [],
+  "shortTerm": [],
+  "longTerm": [
+    {
+      "id": "ltm_stm_global_1997_asian_crisis",
+      "label": "亚洲金融危机（1997年，泰国、印尼、韩国等亚洲新兴市场） | ",
+      "content": "亚洲金融危机（1997年，泰国、印尼、韩国等亚洲新兴市场） | 分类：货币危机与债务危机 | 触发：泰国被迫放弃泰铢与美元固定汇率，资本外逃，外债高企叠加短借长贷的期限与货币双重错配 | 影响：东南亚货币大幅贬值，股市汇市崩盘，韩国接受 IMF 救助，危机蔓延至全球新兴市场 | 教训：固定汇率与高杠杆、短期外债的组合极其脆弱，需警惕资本账户开放过快与货币错配",
+      "concepts": [
+        "currency_crisis",
+        "debt_crisis",
+        "leverage",
+        "contagion",
+        "panic",
+        "systemic_risk"
+      ],
+      "tags": [
+        "全球",
+        "货币危机与债务危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "currency_crisis",
+        "debt_crisis",
+        "leverage",
+        "contagion",
+        "panic",
+        "systemic_risk"
+      ],
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "ltm_stm_global_1998_russia_ltcm",
+      "label": "俄罗斯债务违约与 LTCM 倒闭（1998年，俄罗斯与全球对冲基",
+      "content": "俄罗斯债务违约与 LTCM 倒闭（1998年，俄罗斯与全球对冲基金市场） | 分类：债务违约与高杠杆 | 触发：俄罗斯宣布卢布贬值并违约国内债务，高杠杆对冲基金 LTCM 押注收敛策略失败濒临破产 | 影响：全球信用利差飙升，LTCM 濒临破产，由美联储组织银团救助以避免系统性崩溃 | 教训：高杠杆叠加尾部风险模型失效可导致自毁灭，大而不能倒的救助会带来道德风险",
+      "concepts": [
+        "debt_crisis",
+        "leverage",
+        "systemic_risk",
+        "bailout",
+        "credit_crunch"
+      ],
+      "tags": [
+        "全球",
+        "债务违约与高杠杆",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "debt_crisis",
+        "leverage",
+        "systemic_risk",
+        "bailout",
+        "credit_crunch"
+      ],
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "ltm_stm_global_2000_dotcom_bubble",
+      "label": "互联网泡沫破裂（2000年，美国纳斯达克） | 分类：资产泡沫破",
+      "content": "互联网泡沫破裂（2000年，美国纳斯达克） | 分类：资产泡沫破裂 | 触发：大量无盈利互联网公司估值过高，美联储加息收紧流动性，泡沫随之破裂 | 影响：纳斯达克指数自最高点暴跌约 78%，科技股财富蒸发，美国进入温和衰退 | 教训：脱离基本面的过度投机终会均值回归，需警惕概念炒作与估值泡沫",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "interest_rate",
+        "recession",
+        "market_bottom"
+      ],
+      "tags": [
+        "全球",
+        "资产泡沫破裂",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "bubble",
+        "over_speculation",
+        "interest_rate",
+        "recession",
+        "market_bottom"
+      ],
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "ltm_stm_global_2001_enron",
+      "label": "安然公司财务造假丑闻（2001年，美国能源与审计行业） | 分类",
+      "content": "安然公司财务造假丑闻（2001年，美国能源与审计行业） | 分类：财务造假 | 触发：安然通过特殊目的实体隐藏巨额债务，财务造假被揭露后投资者信心崩塌 | 影响：安然破产，审计巨头安达信解体，推动美国出台萨班斯-奥克斯利法案强化公司治理 | 教训：财务造假会摧毁市场信任，独立审计与公司治理是资本市场的基石",
+      "concepts": [
+        "fraud",
+        "systemic_risk",
+        "regulation",
+        "panic"
+      ],
+      "tags": [
+        "全球",
+        "财务造假",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "fraud",
+        "systemic_risk",
+        "regulation",
+        "panic"
+      ],
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "ltm_stm_global_2001_911_shock",
+      "label": "9·11 事件市场冲击（2001年，美股与全球市场） | 分类：",
+      "content": "9·11 事件市场冲击（2001年，美股与全球市场） | 分类：黑天鹅与恐慌 | 触发：恐怖袭击导致纽交所停市多日，复市后市场出现恐慌性抛售 | 影响：复市首周道指创下单周最大跌幅之一，全球股市同步下挫，随后靠政策刺激逐步企稳 | 教训：黑天鹅事件不可预测，需要流动性缓冲与应急预案而非事后追悔",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "circuit_breaker",
+        "monetary_policy"
+      ],
+      "tags": [
+        "全球",
+        "黑天鹅与恐慌",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "black_swan",
+        "panic",
+        "circuit_breaker",
+        "monetary_policy"
+      ],
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "ltm_stm_global_2008_gfc",
+      "label": "全球金融危机（次贷危机）（2008年，美国与全球金融体系） | ",
+      "content": "全球金融危机（次贷危机）（2008年，美国与全球金融体系） | 分类：系统性金融危机 | 触发：次级抵押贷款证券化泛滥叠加房价下跌，雷曼破产引爆全球信用冻结 | 影响：全球股市腰斩，多家大型金融机构倒闭或被救助，随后引发大衰退 | 教训：高杠杆与证券化错配、缺乏审慎监管会酿成系统性风险，系统重要性机构需强监管",
+      "concepts": [
+        "credit_crunch",
+        "leverage",
+        "systemic_risk",
+        "bubble",
+        "bailout",
+        "recession",
+        "contagion"
+      ],
+      "tags": [
+        "全球",
+        "系统性金融危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "credit_crunch",
+        "leverage",
+        "systemic_risk",
+        "bubble",
+        "bailout",
+        "recession",
+        "contagion"
+      ],
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "ltm_stm_global_2008_lehman_bankruptcy",
+      "label": "雷曼兄弟破产（2008年，美国金融体系） | 分类：系统性风险导",
+      "content": "雷曼兄弟破产（2008年，美国金融体系） | 分类：系统性风险导火索 | 触发：雷曼兄弟资不抵债且政府拒绝救助，宣布破产保护 | 影响：货币市场基金净值跌破 1，全球信用冻结，市场恐慌达到顶峰 | 教训：关键节点风险不清与救助边界模糊会加速传染，需要清晰的处置预案",
+      "concepts": [
+        "systemic_risk",
+        "credit_crunch",
+        "panic",
+        "contagion",
+        "bailout"
+      ],
+      "tags": [
+        "全球",
+        "系统性风险导火索",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "systemic_risk",
+        "credit_crunch",
+        "panic",
+        "contagion",
+        "bailout"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2010_euro_debt_crisis",
+      "label": "欧洲主权债务危机（2010年，欧元区（希腊等外围国家）） | 分",
+      "content": "欧洲主权债务危机（2010年，欧元区（希腊等外围国家）） | 分类：主权债务危机 | 触发：希腊主权债务不可持续，财政赤字与债务集中暴露，欧元区缺乏共同财政兜底 | 影响：多国国债收益率飙升，欧猪五国相继接受救助，欧元一度面临解体风险 | 教训：货币联盟缺乏财政与银行联盟是结构性缺陷，高债务需要长期去杠杆",
+      "concepts": [
+        "debt_crisis",
+        "contagion",
+        "systemic_risk",
+        "bailout",
+        "deleveraging"
+      ],
+      "tags": [
+        "全球",
+        "主权债务危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "debt_crisis",
+        "contagion",
+        "systemic_risk",
+        "bailout",
+        "deleveraging"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2011_us_downgrade",
+      "label": "美国主权评级下调与闪崩（2011年，美股与全球市场） | 分类：",
+      "content": "美国主权评级下调与闪崩（2011年，美股与全球市场） | 分类：信用冲击 | 触发：标普历史性下调美国主权信用评级，美国债务上限僵局引发避险情绪 | 影响：美股暴跌，金价暴涨，避险情绪蔓延全球市场 | 教训：主权信用并非无风险，政策僵局会显著放大市场波动",
+      "concepts": [
+        "debt_crisis",
+        "panic",
+        "monetary_policy",
+        "systemic_risk"
+      ],
+      "tags": [
+        "全球",
+        "信用冲击",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "debt_crisis",
+        "panic",
+        "monetary_policy",
+        "systemic_risk"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2013_taper_tantrum",
+      "label": "缩减恐慌（退出 QE）（2013年，新兴市场） | 分类：流动性",
+      "content": "缩减恐慌（退出 QE）（2013年，新兴市场） | 分类：流动性急转 | 触发：美联储暗示缩减量化宽松，新兴市场资本迅速回流美元资产 | 影响：新兴市场货币与股市重挫，印度、印尼等被迫加息以稳定汇率 | 教训：高杠杆新兴市场对美元流动性高度敏感，需警惕资本流动逆转",
+      "concepts": [
+        "monetary_policy",
+        "interest_rate",
+        "liquidity_crisis",
+        "contagion"
+      ],
+      "tags": [
+        "全球",
+        "流动性急转",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "monetary_policy",
+        "interest_rate",
+        "liquidity_crisis",
+        "contagion"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2015_china_crash_spill",
+      "label": "中国股灾与全球闪崩（8·24）（2015年，中国A股与全球市场）",
+      "content": "中国股灾与全球闪崩（8·24）（2015年，中国A股与全球市场） | 分类：风险传染 | 触发：中国A股杠杆牛破灭暴跌，伴随人民币贬值引发全球风险重估 | 影响：8月24日全球股市遭遇黑色星期一，道指盘初跌逾千点，恐慌情绪全球蔓延 | 教训：新兴市场金融波动会通过预期与资本流动传染全球，需重视跨境相关性",
+      "concepts": [
+        "contagion",
+        "panic",
+        "margin_trading",
+        "currency_crisis",
+        "correlation"
+      ],
+      "tags": [
+        "全球",
+        "风险传染",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "contagion",
+        "panic",
+        "margin_trading",
+        "currency_crisis",
+        "correlation"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2016_brexit",
+      "label": "英国脱欧公投（2016年，英镑与英国股市） | 分类：黑天鹅与政",
+      "content": "英国脱欧公投（2016年，英镑与英国股市） | 分类：黑天鹅与政治事件 | 触发：英国公投意外通过脱欧，政治不确定性骤然上升 | 影响：英镑单日暴跌创纪录，全球股市重挫，避险资产大涨 | 教训：政治事件可成为黑天鹅，重大不确定性前应降低仓位",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "currency_crisis"
+      ],
+      "tags": [
+        "全球",
+        "黑天鹅与政治事件",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "black_swan",
+        "panic",
+        "currency_crisis"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2018_q4_selloff",
+      "label": "2018 年四季度全球暴跌（2018年，美股与全球市场） | 分",
+      "content": "2018 年四季度全球暴跌（2018年，美股与全球市场） | 分类：加息与贸易战 | 触发：美联储持续加息与缩表，叠加中美贸易战升级，成长股估值承压 | 影响：美股12月暴跌，标普一度跌入技术性熊市边缘，回吐全年涨幅 | 教训：紧缩周期与外部摩擦叠加时，高估值资产最脆弱",
+      "concepts": [
+        "interest_rate",
+        "monetary_policy",
+        "trade_war",
+        "deleveraging",
+        "bubble"
+      ],
+      "tags": [
+        "全球",
+        "加息与贸易战",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "interest_rate",
+        "monetary_policy",
+        "trade_war",
+        "deleveraging",
+        "bubble"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2020_covid_crash",
+      "label": "新冠疫情全球崩盘（2020年，美股与全球市场） | 分类：黑天鹅",
+      "content": "新冠疫情全球崩盘（2020年，美股与全球市场） | 分类：黑天鹅与流动性危机 | 触发：新冠疫情全球爆发导致经济停摆，恐慌抛售引爆流动性挤兑 | 影响：美股10天内四次熔断，全球股市以历史最快速度跌入熊市，后靠天量宽松快速反弹 | 教训：极端黑天鹅下现金为王，流动性挤兑会放大跌幅，但政策托底需有度",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "liquidity_crisis",
+        "circuit_breaker",
+        "bailout",
+        "recession"
+      ],
+      "tags": [
+        "全球",
+        "黑天鹅与流动性危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "black_swan",
+        "panic",
+        "liquidity_crisis",
+        "circuit_breaker",
+        "bailout",
+        "recession"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2022_bear_market",
+      "label": "全球加息与俄乌冲突熊市（2022年，美股与全球市场） | 分类：",
+      "content": "全球加息与俄乌冲突熊市（2022年，美股与全球市场） | 分类：通胀与地缘风险 | 触发：高通胀迫使美联储激进加息，俄乌冲突推升能源与粮食价格 | 影响：标普与纳指进入熊市，科技成长股重挫，出现股债双杀 | 教训：高通胀与激进加息会重创高久期资产，地缘风险推高尾部风险",
+      "concepts": [
+        "inflation",
+        "interest_rate",
+        "monetary_policy",
+        "bubble",
+        "recession",
+        "black_swan"
+      ],
+      "tags": [
+        "全球",
+        "通胀与地缘风险",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "inflation",
+        "interest_rate",
+        "monetary_policy",
+        "bubble",
+        "recession",
+        "black_swan"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2023_svb_collapse",
+      "label": "硅谷银行倒闭与区域银行危机（2023年，美国银行业） | 分类：",
+      "content": "硅谷银行倒闭与区域银行危机（2023年，美国银行业） | 分类：流动性挤兑 | 触发：美联储加息致银行持有债券浮亏，硅谷银行遭存款挤兑而倒闭 | 影响：多家区域银行被接管，全球银行股重挫，监管与央行紧急提供流动性支持 | 教训：资产负债期限错配在加息周期中致命，存款挤兑可在数小时内击垮银行",
+      "concepts": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "systemic_risk",
+        "bailout",
+        "interest_rate"
+      ],
+      "tags": [
+        "全球",
+        "流动性挤兑",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "systemic_risk",
+        "bailout",
+        "interest_rate"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_global_2024_yen_carry_unwind",
+      "label": "日元套息交易平仓冲击（2024年，日经指数与全球市场） | 分类",
+      "content": "日元套息交易平仓冲击（2024年，日经指数与全球市场） | 分类：套息交易逆转 | 触发：日本央行加息叠加美国衰退担忧，日元急升引发套息交易大规模平仓 | 影响：日经225单日暴跌逾12%，全球股市震荡，波动率指数飙升 | 教训：拥挤交易在反转时踩踏严重，杠杆资金与衍生品会放大踩踏",
+      "concepts": [
+        "carry_trade",
+        "leverage",
+        "panic",
+        "correlation",
+        "liquidity_crisis"
+      ],
+      "tags": [
+        "全球",
+        "套息交易逆转",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "carry_trade",
+        "leverage",
+        "panic",
+        "correlation",
+        "liquidity_crisis"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_cn_1996_peoples_daily",
+      "label": "12 道金牌与人民日报社论暴跌（1996年，上证指数） | 分类",
+      "content": "12 道金牌与人民日报社论暴跌（1996年，上证指数） | 分类：政策降温 | 触发：股市过热，监管连续出台降温政策，人民日报刊发《正确认识当前股票市场》社论 | 影响：上证指数连续两天近乎全线跌停，随后数日累计深跌 | 教训：政策市情绪波动剧烈，监管态度突变是A股重要的系统性变量",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "panic",
+        "over_speculation"
+      ],
+      "tags": [
+        "中国A股",
+        "政策降温",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "policy_market",
+        "regulation",
+        "panic",
+        "over_speculation"
+      ],
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "ltm_stm_cn_1999_519_bull",
+      "label": "5·19 行情（政策牛）（1999年，上证指数） | 分类：政策",
+      "content": "5·19 行情（政策牛）（1999年，上证指数） | 分类：政策驱动牛市 | 触发：政策鼓励股市发展、降息并提供舆论支持，科技与网络股爆发 | 影响：上证指数一个多月大涨约60%，网络股题材被爆炒 | 教训：政策驱动的快牛往往伴随题材投机，后续容易泡沫化",
+      "concepts": [
+        "policy_market",
+        "over_speculation",
+        "bubble",
+        "monetary_policy",
+        "retail_speculation"
+      ],
+      "tags": [
+        "中国A股",
+        "政策驱动牛市",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "policy_market",
+        "over_speculation",
+        "bubble",
+        "monetary_policy",
+        "retail_speculation"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2001_state_share_reduction",
+      "label": "国有股减持与四年熊市（2001年，上证指数） | 分类：制度冲击",
+      "content": "国有股减持与四年熊市（2001年，上证指数） | 分类：制度冲击 | 触发：国有股减持方案引发市场对扩容抽血的担忧，政策反复加剧不确定性 | 影响：上证自2245点开启长达约4年熊市，最低跌至998点 | 教训：制度设计与投资者预期的稳定至关重要，股权分置等结构性问题需审慎处理",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "market_bottom",
+        "panic"
+      ],
+      "tags": [
+        "中国A股",
+        "制度冲击",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "policy_market",
+        "regulation",
+        "market_bottom",
+        "panic"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2007_530_stamp_tax",
+      "label": "5·30 印花税冲击（2007年，上证指数） | 分类：政策降温",
+      "content": "5·30 印花税冲击（2007年，上证指数） | 分类：政策降温 | 触发：财政部凌晨上调印花税税率以抑制股市过热 | 影响：上证指数5天内暴跌约20%，数千只个股跌停，随后宽幅震荡 | 教训：政策突袭对市场情绪打击极大，投资者需防范政策黑天鹅",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "panic"
+      ],
+      "tags": [
+        "中国A股",
+        "政策降温",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "policy_market",
+        "regulation",
+        "panic"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2008_6124_to_1664",
+      "label": "6124 点见顶与金融危机暴跌（2008年，上证指数） | 分类",
+      "content": "6124 点见顶与金融危机暴跌（2008年，上证指数） | 分类：泡沫破裂与外部冲击 | 触发：前期过度投机推升至6124点，随全球金融危机爆发而崩盘 | 影响：上证指数一年内从6124点跌至1664点，跌幅约73% | 教训：大泡沫必有深回调，外部冲击与高估值叠加时风险巨大",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "contagion",
+        "market_bottom",
+        "panic"
+      ],
+      "tags": [
+        "中国A股",
+        "泡沫破裂与外部冲击",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "bubble",
+        "over_speculation",
+        "contagion",
+        "market_bottom",
+        "panic"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2013_money_crunch",
+      "label": "钱荒与同业利率飙升（2013年，上证指数与债券市场） | 分类：",
+      "content": "钱荒与同业利率飙升（2013年，上证指数与债券市场） | 分类：流动性危机 | 触发：银行间市场流动性骤紧，隔夜回购利率一度飙升至30%以上 | 影响：A股急跌，债市重挫，暴露影子银行与期限错配风险 | 教训：金融体系流动性紧张会迅速传导至股市，需关注银行间利率异动",
+      "concepts": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "interest_rate",
+        "systemic_risk"
+      ],
+      "tags": [
+        "中国A股",
+        "流动性危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "interest_rate",
+        "systemic_risk"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2015_leverage_bubble_crash",
+      "label": "2015 年股灾（杠杆牛破灭）（2015年，上证指数与创业板） ",
+      "content": "2015 年股灾（杠杆牛破灭）（2015年，上证指数与创业板） | 分类：杠杆泡沫破裂 | 触发：场外配资与两融推动的快牛泡沫破裂，去杠杆引发强制平仓踩踏 | 影响：A股两个月内上演千股跌停、千股停牌，上证最大回撤超40% | 教训：杠杆资金助涨助跌，流动性枯竭与强制平仓会造成极端踩踏，务必严格止损",
+      "concepts": [
+        "leverage",
+        "margin_trading",
+        "bubble",
+        "over_speculation",
+        "panic",
+        "liquidity_crisis",
+        "stop_loss",
+        "retail_speculation"
+      ],
+      "tags": [
+        "中国A股",
+        "杠杆泡沫破裂",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "leverage",
+        "margin_trading",
+        "bubble",
+        "over_speculation",
+        "panic",
+        "liquidity_crisis",
+        "stop_loss",
+        "retail_speculation"
+      ],
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "ltm_stm_cn_2016_circuit_breaker",
+      "label": "熔断机制失灵（2016年，沪深300） | 分类：制度失灵 | ",
+      "content": "熔断机制失灵（2016年，沪深300） | 分类：制度失灵 | 触发：熔断机制首周即被触发，磁吸效应加剧恐慌抛售 | 影响：沪深300两度熔断导致市场提前收盘，熔断机制随后被暂停 | 教训：制度设计需符合市场微观结构，熔断阈值不当会放大踩踏",
+      "concepts": [
+        "circuit_breaker",
+        "panic",
+        "liquidity_crisis",
+        "policy_market"
+      ],
+      "tags": [
+        "中国A股",
+        "制度失灵",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "circuit_breaker",
+        "panic",
+        "liquidity_crisis",
+        "policy_market"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2018_full_year_bear",
+      "label": "全年熊市（贸易战与股权质押）（2018年，上证指数） | 分类：",
+      "content": "全年熊市（贸易战与股权质押）（2018年，上证指数） | 分类：去杠杆与外部摩擦 | 触发：中美贸易战升级，叠加国内去杠杆与股权质押风险集中暴露 | 影响：上证自3587点跌至2440点，全年单边下行，股权质押爆仓此起彼伏 | 教训：去杠杆周期与外部摩擦共振时，高质押与高杠杆标的风险最大",
+      "concepts": [
+        "trade_war",
+        "deleveraging",
+        "equity_pledge",
+        "margin_trading",
+        "market_bottom",
+        "stop_loss"
+      ],
+      "tags": [
+        "中国A股",
+        "去杠杆与外部摩擦",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trade_war",
+        "deleveraging",
+        "equity_pledge",
+        "margin_trading",
+        "market_bottom",
+        "stop_loss"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2020_covid_flash_drop",
+      "label": "春节后疫情闪跌与快速反弹（2020年，上证指数与创业板） | 分",
+      "content": "春节后疫情闪跌与快速反弹（2020年，上证指数与创业板） | 分类：黑天鹅与政策托底 | 触发：新冠疫情导致春节后首个交易日出现恐慌性抛售 | 影响：上证单日跌逾7%、近3000股跌停，随后政策宽松与外资回流带来快速V型反弹 | 教训：一次性冲击后的政策托底能快速修复，恐慌杀跌反而可能提供机会",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "bailout",
+        "monetary_policy",
+        "market_bottom"
+      ],
+      "tags": [
+        "中国A股",
+        "黑天鹅与政策托底",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "black_swan",
+        "panic",
+        "bailout",
+        "monetary_policy",
+        "market_bottom"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2021_core_asset_unwind",
+      "label": "核心资产抱团瓦解（2021年，沪深300与茅指数） | 分类：抱",
+      "content": "核心资产抱团瓦解（2021年，沪深300与茅指数） | 分类：抱团瓦解 | 触发：抱团白马股估值过高，流动性边际收紧，茅指数自高位回落 | 影响：白酒、医药、新能源等核心资产持续阴跌，基金净值大面积回撤 | 教训：抱团的尽头是踩踏，估值透支后均值回归不可避免",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "correlation",
+        "market_bottom"
+      ],
+      "tags": [
+        "中国A股",
+        "抱团瓦解",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "bubble",
+        "over_speculation",
+        "correlation",
+        "market_bottom"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2022_shanghai_lockdown",
+      "label": "上海封控冲击（2022年，上证指数与创业板） | 分类：供给冲击",
+      "content": "上海封控冲击（2022年，上证指数与创业板） | 分类：供给冲击与情绪冲击 | 触发：上海疫情封控扰乱供应链，叠加美联储加息与俄乌冲突 | 影响：上证跌破3000点、创业板连创新低，市场信心受挫 | 教训：供应链中断与内外利空叠加会放大跌幅，需关注经济基本盘",
+      "concepts": [
+        "panic",
+        "recession",
+        "black_swan",
+        "market_bottom"
+      ],
+      "tags": [
+        "中国A股",
+        "供给冲击与情绪冲击",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "panic",
+        "recession",
+        "black_swan",
+        "market_bottom"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2024_microcap_liquidity_crisis",
+      "label": "微盘股与雪球产品流动性危机（2024年，中证2000与微盘股） ",
+      "content": "微盘股与雪球产品流动性危机（2024年，中证2000与微盘股） | 分类：流动性危机 | 触发：雪球产品集中敲入、量化DMA去杠杆与两融爆仓，微盘股流动性枯竭 | 影响：微盘股连续暴跌，多只相关ETF跌幅巨大，最终国家队入市托底 | 教训：杠杆、衍生品与小市值低流动性叠加会酿成踩踏，需关注微观流动性",
+      "concepts": [
+        "liquidity_crisis",
+        "leverage",
+        "margin_trading",
+        "panic",
+        "bailout",
+        "stop_loss"
+      ],
+      "tags": [
+        "中国A股",
+        "流动性危机",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "liquidity_crisis",
+        "leverage",
+        "margin_trading",
+        "panic",
+        "bailout",
+        "stop_loss"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_cn_2024_924_rally",
+      "label": "9·24 政策刺激行情（2024年，上证指数与创业板） | 分类",
+      "content": "9·24 政策刺激行情（2024年，上证指数与创业板） | 分类：政策反转 | 触发：央行、证监会等多部门密集出台降准降息与资本市场支持政策 | 影响：上证指数单周暴涨、成交额创天量，市场情绪由冰点转向狂热 | 教训：政策反转可快速修复估值，但需警惕情绪过热后的回调",
+      "concepts": [
+        "policy_market",
+        "monetary_policy",
+        "bailout",
+        "over_speculation"
+      ],
+      "tags": [
+        "中国A股",
+        "政策反转",
+        "市场风波",
+        "历史案例"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "policy_market",
+        "monetary_policy",
+        "bailout",
+        "over_speculation"
+      ],
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "ltm_stm_book_01",
+      "label": "[书籍] 聪明的投资者 | 作者：本杰明·格雷厄姆 | 年份：1",
+      "content": "[书籍] 聪明的投资者 | 作者：本杰明·格雷厄姆 | 年份：1949 | 类别：价值投资 | 内容：价值投资圣经，提出市场先生、安全边际、投资与投机之分。 | 要点：安全边际是投资的根本；用市场先生的情绪而非被其支配；区分投资与投机；防御型与进取型投资者",
+      "concepts": [
+        "value_investing",
+        "margin_of_safety",
+        "intrinsic_value",
+        "behavior_finance"
+      ],
+      "tags": [
+        "价值投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "margin_of_safety",
+        "intrinsic_value",
+        "behavior_finance"
+      ],
+      "timestamp": 1787152938549
+    },
+    {
+      "id": "ltm_stm_book_02",
+      "label": "[书籍] 证券分析 | 作者：本杰明·格雷厄姆、戴维·多德 | ",
+      "content": "[书籍] 证券分析 | 作者：本杰明·格雷厄姆、戴维·多德 | 年份：1934 | 类别：价值投资 | 内容：价值投资理论奠基之作，系统阐述证券分析与内在价值计算。 | 要点：内在价值决定价格长期收敛；财务报表是分析的起点；定量与定性结合",
+      "concepts": [
+        "value_investing",
+        "intrinsic_value",
+        "fundamental_analysis"
+      ],
+      "tags": [
+        "价值投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "intrinsic_value",
+        "fundamental_analysis"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_03",
+      "label": "[书籍] 巴菲特致股东的信 | 作者：沃伦·巴菲特 | 年份：1",
+      "content": "[书籍] 巴菲特致股东的信 | 作者：沃伦·巴菲特 | 年份：1965 | 类别：价值投资 | 内容：透过历年致股东信阐述护城河、能力圈、长期持有与现金流折现。 | 要点：以合理价格买入伟大公司；护城河是竞争优势的护盾；能力圈内做决策；长期持有优质资产",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "circle_of_competence",
+        "long_term_holding",
+        "dcf_valuation"
+      ],
+      "tags": [
+        "价值投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "circle_of_competence",
+        "long_term_holding",
+        "dcf_valuation"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_04",
+      "label": "[书籍] 穷查理宝典 | 作者：查理·芒格 | 年份：2005 ",
+      "content": "[书籍] 穷查理宝典 | 作者：查理·芒格 | 年份：2005 | 类别：多元思维 | 内容：多元思维模型、逆向思维、避免愚蠢，是查理芒格智慧的总汇。 | 要点：用多学科思维模型做决策；反过来想，总是反过来想；待在能力圈内；避免做蠢事胜过做聪明事",
+      "concepts": [
+        "circle_of_competence",
+        "contrarian",
+        "behavior_finance",
+        "value_investing"
+      ],
+      "tags": [
+        "多元思维",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "circle_of_competence",
+        "contrarian",
+        "behavior_finance",
+        "value_investing"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_05",
+      "label": "[书籍] 怎样选择成长股 | 作者：菲利普·费雪 | 年份：19",
+      "content": "[书籍] 怎样选择成长股 | 作者：菲利普·费雪 | 年份：1958 | 类别：成长投资 | 内容：成长股投资开山之作，提出 15 要点与闲聊法调研。 | 要点：15 要点评估成长股；闲聊法了解公司；长期持有优质成长股",
+      "concepts": [
+        "growth_investing",
+        "fundamental_analysis",
+        "long_term_holding"
+      ],
+      "tags": [
+        "成长投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "fundamental_analysis",
+        "long_term_holding"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_06",
+      "label": "[书籍] 彼得·林奇的成功投资 | 作者：彼得·林奇 | 年份：",
+      "content": "[书籍] 彼得·林奇的成功投资 | 作者：彼得·林奇 | 年份：1989 | 类别：成长投资 | 内容：从生活发现十倍股，把公司分为六类并分而治之。 | 要点：业余投资者也有优势；六类公司分类法；从日常生活中发现投资机会；了解你买入的是什么",
+      "concepts": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "tags": [
+        "成长投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_07",
+      "label": "[书籍] 漫步华尔街 | 作者：伯顿·马尔基尔 | 年份：197",
+      "content": "[书籍] 漫步华尔街 | 作者：伯顿·马尔基尔 | 年份：1973 | 类别：指数投资 | 内容：阐述随机游走与有效市场理论，主张普通投资者采用指数投资。 | 要点：市场短期难以持续战胜；低成本指数基金是长期稳健选择；泡沫与基本面背离时需谨慎",
+      "concepts": [
+        "market_efficiency",
+        "index_investing",
+        "diversification"
+      ],
+      "tags": [
+        "指数投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "market_efficiency",
+        "index_investing",
+        "diversification"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_08",
+      "label": "[书籍] 股市长线法宝 | 作者：杰里米·西格尔 | 年份：19",
+      "content": "[书籍] 股市长线法宝 | 作者：杰里米·西格尔 | 年份：1994 | 类别：长期投资 | 内容：用长期数据证明股票是长期回报最优的大类资产。 | 要点：长期视角下股票跑赢债券与现金；复利与时间的力量；分散与再平衡",
+      "concepts": [
+        "long_term_holding",
+        "compounding",
+        "asset_allocation"
+      ],
+      "tags": [
+        "长期投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "long_term_holding",
+        "compounding",
+        "asset_allocation"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_09",
+      "label": "[书籍] 笑傲股市 | 作者：威廉·欧奈尔 | 年份：1988 ",
+      "content": "[书籍] 笑傲股市 | 作者：威廉·欧奈尔 | 年份：1988 | 类别：趋势成长 | 内容：提出 CAN SLIM 七要素选股体系，强调基本面与趋势共振。 | 要点：CAN SLIM 七要素；买入创新高的强势股；严守止损纪律；量价配合确认形态",
+      "concepts": [
+        "growth_investing",
+        "momentum",
+        "technical_analysis",
+        "stop_loss"
+      ],
+      "tags": [
+        "趋势成长",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "momentum",
+        "technical_analysis",
+        "stop_loss"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_10",
+      "label": "[书籍] 股市趋势技术分析 | 作者：罗伯特·爱德华兹、约翰·迈",
+      "content": "[书籍] 股市趋势技术分析 | 作者：罗伯特·爱德华兹、约翰·迈吉 | 年份：1948 | 类别：技术分析 | 内容：技术分析奠基之作，系统阐述道氏理论、趋势与形态。 | 要点：趋势是技术分析的核心；头肩顶/底等经典形态；支撑与阻力；成交量验证趋势",
+      "concepts": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "tags": [
+        "技术分析",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_11",
+      "label": "[书籍] 日本蜡烛图技术 | 作者：史蒂夫·尼森 | 年份：19",
+      "content": "[书籍] 日本蜡烛图技术 | 作者：史蒂夫·尼森 | 年份：1991 | 类别：技术分析 | 内容：将日本 K 线图技术系统引入西方，梳理反转与持续形态。 | 要点：K 线反映多空力量；十字星、吞没等反转信号；结合趋势与成交量使用",
+      "concepts": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "tags": [
+        "技术分析",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_12",
+      "label": "[书籍] 金融炼金术 | 作者：乔治·索罗斯 | 年份：1987",
+      "content": "[书籍] 金融炼金术 | 作者：乔治·索罗斯 | 年份：1987 | 类别：反身性 | 内容：提出反身性理论，解释价格与基本面互相强化的反馈循环。 | 要点：反身性：认知与现实互相影响；价格可以反过来改变基本面；盛衰循环与转折点",
+      "concepts": [
+        "reflexivity",
+        "bubble",
+        "over_speculation"
+      ],
+      "tags": [
+        "反身性",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "reflexivity",
+        "bubble",
+        "over_speculation"
+      ],
+      "timestamp": 1787152938550
+    },
+    {
+      "id": "ltm_stm_book_13",
+      "label": "[书籍] 海龟交易法则 | 作者：柯蒂斯·费思 | 年份：200",
+      "content": "[书籍] 海龟交易法则 | 作者：柯蒂斯·费思 | 年份：2007 | 类别：趋势跟踪 | 内容：海龟实验的完整法则，证明机械化趋势跟踪与仓位管理可长期盈利。 | 要点：趋势跟踪突破入场；以风险定仓位(ATR)；严守系统信号不做主观干预；分散多市场",
+      "concepts": [
+        "trend_following",
+        "position_sizing",
+        "risk_management",
+        "quant_investing"
+      ],
+      "tags": [
+        "趋势跟踪",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trend_following",
+        "position_sizing",
+        "risk_management",
+        "quant_investing"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_14",
+      "label": "[书籍] 专业投机原理 | 作者：维克托·斯波朗迪 | 年份：1",
+      "content": "[书籍] 专业投机原理 | 作者：维克托·斯波朗迪 | 年份：1992 | 类别：趋势与风控 | 内容：用道氏理论判断趋势，强调资金管理与风险控制为第一要务。 | 要点：识别主要趋势；风险管理优先于盈利；道氏理论应用；情绪与纪律",
+      "concepts": [
+        "trend_following",
+        "risk_management",
+        "position_sizing"
+      ],
+      "tags": [
+        "趋势与风控",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trend_following",
+        "risk_management",
+        "position_sizing"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_15",
+      "label": "[书籍] 交易心理分析 | 作者：马克·道格拉斯 | 年份：20",
+      "content": "[书籍] 交易心理分析 | 作者：马克·道格拉斯 | 年份：2000 | 类别：交易心理 | 内容：揭示情绪化交易与概率思维之间的鸿沟，帮助建立一致性心理。 | 要点：用概率思维看待单笔交易；接受不确定性；建立交易信念与纪律；结果不是衡量对错的唯一标准",
+      "concepts": [
+        "trading_psychology",
+        "risk_management",
+        "behavior_finance"
+      ],
+      "tags": [
+        "交易心理",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trading_psychology",
+        "risk_management",
+        "behavior_finance"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_16",
+      "label": "[书籍] 投资最重要的事 | 作者：霍华德·马克斯 | 年份：2",
+      "content": "[书籍] 投资最重要的事 | 作者：霍华德·马克斯 | 年份：2011 | 类别：价值与周期 | 内容：提出第二层思维，强调风险、周期与周期定位。 | 要点：第二层思维：想人所未想；风险主要来自高价买入；钟摆式情绪摆动；周期定位决定风险收益比",
+      "concepts": [
+        "value_investing",
+        "economic_cycle",
+        "risk_management",
+        "contrarian"
+      ],
+      "tags": [
+        "价值与周期",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "economic_cycle",
+        "risk_management",
+        "contrarian"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_17",
+      "label": "[书籍] 周期 | 作者：霍华德·马克斯 | 年份：2018 |",
+      "content": "[书籍] 周期 | 作者：霍华德·马克斯 | 年份：2018 | 类别：周期理论 | 内容：系统阐述经济、信贷、情绪周期，指导周期定位。 | 要点：万物皆周期；钟摆总在过度之间摆动；识别所处周期位置；逆向利用极端情绪",
+      "concepts": [
+        "economic_cycle",
+        "contrarian",
+        "risk_management"
+      ],
+      "tags": [
+        "周期理论",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "economic_cycle",
+        "contrarian",
+        "risk_management"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_18",
+      "label": "[书籍] 非理性繁荣 | 作者：罗伯特·席勒 | 年份：2000",
+      "content": "[书籍] 非理性繁荣 | 作者：罗伯特·席勒 | 年份：2000 | 类别：行为金融 | 内容：从行为金融角度剖析市场泡沫的形成与破裂机制。 | 要点：泡沫源于集体乐观；房价与股价存在反馈强化；叙事与情绪驱动价格；估值终将回归",
+      "concepts": [
+        "behavior_finance",
+        "bubble",
+        "over_speculation"
+      ],
+      "tags": [
+        "行为金融",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "behavior_finance",
+        "bubble",
+        "over_speculation"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_19",
+      "label": "[书籍] 随机漫步的傻瓜 | 作者：纳西姆·塔勒布 | 年份：2",
+      "content": "[书籍] 随机漫步的傻瓜 | 作者：纳西姆·塔勒布 | 年份：2001 | 类别：随机性 | 内容：揭示运气与技能的混淆、幸存者偏差等认知陷阱。 | 要点：随机性无处不在；警惕幸存者偏差；区分运气与能力；避免被罕见事件击垮",
+      "concepts": [
+        "behavior_finance",
+        "black_swan",
+        "risk_management"
+      ],
+      "tags": [
+        "随机性",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "behavior_finance",
+        "black_swan",
+        "risk_management"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_20",
+      "label": "[书籍] 黑天鹅 | 作者：纳西姆·塔勒布 | 年份：2007 ",
+      "content": "[书籍] 黑天鹅 | 作者：纳西姆·塔勒布 | 年份：2007 | 类别：尾部风险 | 内容：论述极端不可预测事件对市场的巨大冲击与应对。 | 要点：黑天鹅无法预测但要有所准备；尾部风险不可忽视；杠铃策略：极端保守+极端激进；反脆弱",
+      "concepts": [
+        "black_swan",
+        "risk_management",
+        "hedging"
+      ],
+      "tags": [
+        "尾部风险",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "black_swan",
+        "risk_management",
+        "hedging"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_21",
+      "label": "[书籍] 思考，快与慢 | 作者：丹尼尔·卡尼曼 | 年份：20",
+      "content": "[书籍] 思考，快与慢 | 作者：丹尼尔·卡尼曼 | 年份：2011 | 类别：行为金融 | 内容：系统阐述系统1与系统2、损失厌恶、锚定等认知偏差。 | 要点：损失厌恶导致过早止盈过晚止损；锚定效应；过度自信；用系统2克制冲动",
+      "concepts": [
+        "behavior_finance",
+        "trading_psychology",
+        "risk"
+      ],
+      "tags": [
+        "行为金融",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "behavior_finance",
+        "trading_psychology",
+        "risk"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_22",
+      "label": "[书籍] 原则 | 作者：雷·达里奥 | 年份：2017 | 类",
+      "content": "[书籍] 原则 | 作者：雷·达里奥 | 年份：2017 | 类别：宏观配置 | 内容：桥水基金的方法论，强调极度求真透明、系统化决策与全天候。 | 要点：极度求真与透明；把决策系统化、原则化；理解债务与经济机器；风险平价配置",
+      "concepts": [
+        "asset_allocation",
+        "risk_management",
+        "economic_cycle",
+        "reflexivity"
+      ],
+      "tags": [
+        "宏观配置",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "asset_allocation",
+        "risk_management",
+        "economic_cycle",
+        "reflexivity"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_23",
+      "label": "[书籍] 债务危机 | 作者：雷·达里奥 | 年份：2018 |",
+      "content": "[书籍] 债务危机 | 作者：雷·达里奥 | 年份：2018 | 类别：宏观周期 | 内容：用债务周期模型解释通缩性萧条与通胀性萧条的机理。 | 要点：债务周期驱动经济周期；去杠杆的四种方式；识别泡沫与崩溃的模板；政策应对路径",
+      "concepts": [
+        "economic_cycle",
+        "leverage",
+        "liquidity_crisis",
+        "asset_allocation"
+      ],
+      "tags": [
+        "宏观周期",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "economic_cycle",
+        "leverage",
+        "liquidity_crisis",
+        "asset_allocation"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_24",
+      "label": "[书籍] 股市真规则 | 作者：乔尔·格林布拉特 | 年份：20",
+      "content": "[书籍] 股市真规则 | 作者：乔尔·格林布拉特 | 年份：2005 | 类别：量化价值 | 内容：提出神奇公式：用资本回报率与盈利收益率排序选股。 | 要点：神奇公式：高ROIC+低PE；价值与质量结合；分散持有克服个股波动；纪律执行优于主观判断",
+      "concepts": [
+        "value_investing",
+        "quant_investing",
+        "fundamental_analysis"
+      ],
+      "tags": [
+        "量化价值",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "quant_investing",
+        "fundamental_analysis"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_25",
+      "label": "[书籍] 常识投资 | 作者：约翰·博格 | 年份：2007 |",
+      "content": "[书籍] 常识投资 | 作者：约翰·博格 | 年份：2007 | 类别：指数投资 | 内容：指数基金之父阐述低成本、长期持有指数基金的复利威力。 | 要点：成本是长期收益的重要敌人；绝大多数主动基金跑不赢指数；长期坚持与再投资",
+      "concepts": [
+        "index_investing",
+        "market_efficiency",
+        "compounding",
+        "long_term_holding"
+      ],
+      "tags": [
+        "指数投资",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "index_investing",
+        "market_efficiency",
+        "compounding",
+        "long_term_holding"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_book_26",
+      "label": "[书籍] 戴维斯王朝 | 作者：约翰·罗斯柴尔德 | 年份：19",
+      "content": "[书籍] 戴维斯王朝 | 作者：约翰·罗斯柴尔德 | 年份：1991 | 类别：复利与成长 | 内容：戴维斯家族三代投资保险股，演绎戴维斯双击与长期复利。 | 要点：戴维斯双击：盈利与估值同升；选择长坡厚雪的行业；复利需要时间；集中优质企业",
+      "concepts": [
+        "compounding",
+        "growth_investing",
+        "long_term_holding",
+        "value_investing"
+      ],
+      "tags": [
+        "复利与成长",
+        "投资书籍",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "compounding",
+        "growth_investing",
+        "long_term_holding",
+        "value_investing"
+      ],
+      "timestamp": 1787152938551
+    },
+    {
+      "id": "ltm_stm_tech_01",
+      "label": "[交易技术] 价值投资内在价值核算法 | 年份： | 类别：价值",
+      "content": "[交易技术] 价值投资内在价值核算法 | 年份： | 类别：价值投资 | 内容：通过自由现金流折现(DCF)估算内在价值，以安全边际低于其买入。 | 要点：DCF 现金流折现；安全边际缓冲估值误差；低于内在价值买入",
+      "concepts": [
+        "value_investing",
+        "intrinsic_value",
+        "dcf_valuation",
+        "margin_of_safety"
+      ],
+      "tags": [
+        "价值投资",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "intrinsic_value",
+        "dcf_valuation",
+        "margin_of_safety"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_02",
+      "label": "[交易技术] 成长股投资 PEG 法 | 年份： | 类别：成长",
+      "content": "[交易技术] 成长股投资 PEG 法 | 年份： | 类别：成长投资 | 内容：以 PEG(市盈率/增长率)衡量成长股性价比，寻找高增长低估值的公司。 | 要点：PEG 低于 1 较划算；护城河支撑持续成长；甄别真成长与伪成长",
+      "concepts": [
+        "growth_investing",
+        "peg_ratio",
+        "moat"
+      ],
+      "tags": [
+        "成长投资",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "peg_ratio",
+        "moat"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_03",
+      "label": "[交易技术] CAN SLIM 选股体系 | 年份： | 类别：",
+      "content": "[交易技术] CAN SLIM 选股体系 | 年份： | 类别：趋势成长 | 内容：欧奈尔七要素：当季盈利/年度增长/创新/供给需求/龙头/机构/大盘。 | 要点：C 当季每股收益高增长；A 年度盈利持续增长；N 新事物新高中；S 流通盘与供需；L 行业龙头；I 机构认同；M 顺应大盘趋势",
+      "concepts": [
+        "growth_investing",
+        "momentum",
+        "technical_analysis",
+        "trend_following"
+      ],
+      "tags": [
+        "趋势成长",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "momentum",
+        "technical_analysis",
+        "trend_following"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_04",
+      "label": "[交易技术] 趋势跟踪突破系统 | 年份： | 类别：趋势跟踪 ",
+      "content": "[交易技术] 趋势跟踪突破系统 | 年份： | 类别：趋势跟踪 | 内容：突破关键价位入场、跟随趋势直至反转，海龟法则核心。 | 要点：突破入场；趋势中持有；止损保护；系统化不预测",
+      "concepts": [
+        "trend_following",
+        "technical_analysis",
+        "stop_loss"
+      ],
+      "tags": [
+        "趋势跟踪",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trend_following",
+        "technical_analysis",
+        "stop_loss"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_05",
+      "label": "[交易技术] 均值回归策略 | 年份： | 类别：逆向 | 内容",
+      "content": "[交易技术] 均值回归策略 | 年份： | 类别：逆向 | 内容：价格偏离均值过远时反向操作，赌其回归常态。 | 要点：识别超买超卖；统计套利与配对交易；震荡市更有效；均值可能失效需设防",
+      "concepts": [
+        "mean_reversion",
+        "contrarian",
+        "arbitrage"
+      ],
+      "tags": [
+        "逆向",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "mean_reversion",
+        "contrarian",
+        "arbitrage"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_06",
+      "label": "[交易技术] 动量策略 | 年份： | 类别：动量 | 内容：强",
+      "content": "[交易技术] 动量策略 | 年份： | 类别：动量 | 内容：强者恒强，买入近期表现强势标的、卖出弱势标的。 | 要点：追涨强势股；动量在中期有效；需防范动量崩溃；与风控结合",
+      "concepts": [
+        "momentum",
+        "trend_following",
+        "quant_investing"
+      ],
+      "tags": [
+        "动量",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "momentum",
+        "trend_following",
+        "quant_investing"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_07",
+      "label": "[交易技术] 技术分析道氏形态体系 | 年份： | 类别：技术分",
+      "content": "[交易技术] 技术分析道氏形态体系 | 年份： | 类别：技术分析 | 内容：以趋势、支撑阻力、形态与量价关系判断买卖点。 | 要点：主要趋势/次级趋势/短暂趋势；头肩顶、双底等形态；量价配合；突破与假突破的甄别",
+      "concepts": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "tags": [
+        "技术分析",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "technical_analysis",
+        "trend_following"
+      ],
+      "timestamp": 1787152938552
+    },
+    {
+      "id": "ltm_stm_tech_08",
+      "label": "[交易技术] 技术指标系统 | 年份： | 类别：技术分析 | ",
+      "content": "[交易技术] 技术指标系统 | 年份： | 类别：技术分析 | 内容：MACD、RSI、BOLL、均线等技术指标的配合使用。 | 要点：均线判断趋势方向；MACD 看动能与背离；RSI 识别超买超卖；BOLL 看波动区间",
+      "concepts": [
+        "technical_analysis",
+        "mean_reversion",
+        "momentum"
+      ],
+      "tags": [
+        "技术分析",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "technical_analysis",
+        "mean_reversion",
+        "momentum"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_09",
+      "label": "[交易技术] 量化多因子投资 | 年份： | 类别：量化投资 |",
+      "content": "[交易技术] 量化多因子投资 | 年份： | 类别：量化投资 | 内容：用价值、质量、动量、低波等因子系统化构建组合。 | 要点：因子暴露与超额收益；多因子分散；回测与过拟合防范；纪律化再平衡",
+      "concepts": [
+        "quant_investing",
+        "diversification",
+        "fundamental_analysis"
+      ],
+      "tags": [
+        "量化投资",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "quant_investing",
+        "diversification",
+        "fundamental_analysis"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_10",
+      "label": "[交易技术] 套利与统计套利 | 年份： | 类别：量化投资 |",
+      "content": "[交易技术] 套利与统计套利 | 年份： | 类别：量化投资 | 内容：利用定价偏差进行低风险套利，如并购套利、配对交易。 | 要点：捕获价差收敛；风险中性对冲；高频与执行成本；事件与结构套利",
+      "concepts": [
+        "arbitrage",
+        "hedging",
+        "quant_investing"
+      ],
+      "tags": [
+        "量化投资",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "arbitrage",
+        "hedging",
+        "quant_investing"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_11",
+      "label": "[交易技术] 事件驱动投资 | 年份： | 类别：事件驱动 | ",
+      "content": "[交易技术] 事件驱动投资 | 年份： | 类别：事件驱动 | 内容：围绕并购、重组、财报、政策等事件寻找确定性机会。 | 要点：并购套利；财报预期差；政策与制度变化；事件失败风险对冲",
+      "concepts": [
+        "event_driven",
+        "arbitrage",
+        "hedging"
+      ],
+      "tags": [
+        "事件驱动",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "event_driven",
+        "arbitrage",
+        "hedging"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_12",
+      "label": "[交易技术] 做空与对冲技术 | 年份： | 类别：对冲 | 内",
+      "content": "[交易技术] 做空与对冲技术 | 年份： | 类别：对冲 | 内容：识别高估或造假标的做空，或用对冲保护组合尾部风险。 | 要点：识别泡沫与造假；做空的时机与风险；配对交易对冲；用期权/期货保护",
+      "concepts": [
+        "short_selling",
+        "hedging",
+        "black_swan",
+        "risk_management"
+      ],
+      "tags": [
+        "对冲",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "short_selling",
+        "hedging",
+        "black_swan",
+        "risk_management"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_13",
+      "label": "[交易技术] 反身性交易法 | 年份： | 类别：宏观对冲 | ",
+      "content": "[交易技术] 反身性交易法 | 年份： | 类别：宏观对冲 | 内容：索罗斯方法：识别认知与现实互相强化的趋势并顺势下注。 | 要点：识别反身性反馈环；在转折前下重注；关注盛衰循环；灵活止损纠错",
+      "concepts": [
+        "reflexivity",
+        "bubble",
+        "short_selling",
+        "risk_management"
+      ],
+      "tags": [
+        "宏观对冲",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "reflexivity",
+        "bubble",
+        "short_selling",
+        "risk_management"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_14",
+      "label": "[交易技术] 全天候资产配置 | 年份： | 类别：资产配置 |",
+      "content": "[交易技术] 全天候资产配置 | 年份： | 类别：资产配置 | 内容：达里奥风险平价：在不同经济环境下均衡配置风险。 | 要点：四种经济环境的平衡；风险平价而非金额平价；股债商品均衡；长期稳健穿越周期",
+      "concepts": [
+        "asset_allocation",
+        "diversification",
+        "risk_management",
+        "economic_cycle"
+      ],
+      "tags": [
+        "资产配置",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "asset_allocation",
+        "diversification",
+        "risk_management",
+        "economic_cycle"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_15",
+      "label": "[交易技术] 神奇公式选股 | 年份： | 类别：量化价值 | ",
+      "content": "[交易技术] 神奇公式选股 | 年份： | 类别：量化价值 | 内容：格林布拉特：按资本回报率与盈利收益率排序，等权买入前 30。 | 要点：高 ROIC 代表质量；低盈率代表便宜；定期轮动；坚持数年方见成效",
+      "concepts": [
+        "value_investing",
+        "quant_investing",
+        "fundamental_analysis"
+      ],
+      "tags": [
+        "量化价值",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "quant_investing",
+        "fundamental_analysis"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_16",
+      "label": "[交易技术] 凯利公式仓位管理 | 年份： | 类别：仓位管理 ",
+      "content": "[交易技术] 凯利公式仓位管理 | 年份： | 类别：仓位管理 | 内容：根据胜率与赔率计算最优下注比例，避免爆仓。 | 要点：凯利公式 f=(bp-q)/b；高胜率高赔率可重仓；实际常取 1/2 或 1/4 凯利；防止过度下注破产",
+      "concepts": [
+        "kelly_criterion",
+        "position_sizing",
+        "risk_management"
+      ],
+      "tags": [
+        "仓位管理",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "kelly_criterion",
+        "position_sizing",
+        "risk_management"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_17",
+      "label": "[交易技术] 止损与资金管理 | 年份： | 类别：风险管理 |",
+      "content": "[交易技术] 止损与资金管理 | 年份： | 类别：风险管理 | 内容：设定单笔最大亏损与总回撤线，保证活得久。 | 要点：单笔风险控制在 1-2%；止损纪律执行；防爆仓与防连续开仓；回撤保护",
+      "concepts": [
+        "stop_loss",
+        "risk_management",
+        "position_sizing"
+      ],
+      "tags": [
+        "风险管理",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "stop_loss",
+        "risk_management",
+        "position_sizing"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_18",
+      "label": "[交易技术] 行为金融与交易心理 | 年份： | 类别：交易心理",
+      "content": "[交易技术] 行为金融与交易心理 | 年份： | 类别：交易心理 | 内容：识别并克服损失厌恶、过度自信、锚定等认知偏差。 | 要点：克服损失厌恶；避免频繁交易；用规则代替情绪；复盘修正认知偏差",
+      "concepts": [
+        "behavior_finance",
+        "trading_psychology",
+        "risk_management"
+      ],
+      "tags": [
+        "交易心理",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "behavior_finance",
+        "trading_psychology",
+        "risk_management"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_tech_19",
+      "label": "[交易技术] 复利与长期持有 | 年份： | 类别：长期投资 |",
+      "content": "[交易技术] 复利与长期持有 | 年份： | 类别：长期投资 | 内容：以复利与时间放大收益，配合戴维斯双击。 | 要点：时间是复利的朋友；减少交易摩擦；戴维斯双击；耐心持有优质资产",
+      "concepts": [
+        "compounding",
+        "long_term_holding",
+        "value_investing"
+      ],
+      "tags": [
+        "长期投资",
+        "交易技术",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "compounding",
+        "long_term_holding",
+        "value_investing"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_01",
+      "label": "[股神案例] 巴菲特重仓可口可乐 | 人物：沃伦·巴菲特 | 年",
+      "content": "[股神案例] 巴菲特重仓可口可乐 | 人物：沃伦·巴菲特 | 年份：1988 | 类别：价值投资 | 内容：1988 年起买入可口可乐并长期持有，靠品牌护城河获得数十倍回报。 | 要点：品牌护城河；现金流稳定；长期持有不折腾；合理价格买入伟大企业",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_02",
+      "label": "[股神案例] 巴菲特抄底美国运通 | 人物：沃伦·巴菲特 | 年",
+      "content": "[股神案例] 巴菲特抄底美国运通 | 人物：沃伦·巴菲特 | 年份：1964 | 类别：逆向投资 | 内容：色拉油丑闻致股价暴跌，巴菲特重仓买入，获利丰厚。 | 要点：逆势抄底；识别公司持续经营价值；市场恐慌提供机会",
+      "concepts": [
+        "contrarian",
+        "value_investing",
+        "margin_of_safety"
+      ],
+      "tags": [
+        "逆向投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "contrarian",
+        "value_investing",
+        "margin_of_safety"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_03",
+      "label": "[股神案例] 巴菲特重仓苹果 | 人物：沃伦·巴菲特 | 年份：",
+      "content": "[股神案例] 巴菲特重仓苹果 | 人物：沃伦·巴菲特 | 年份：2016 | 类别：价值投资 | 内容：将苹果视为消费生态公司重仓，成为其最大持仓之一。 | 要点：消费品属性+品牌忠诚；现金流与回购；能力圈内的科技股",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "long_term_holding"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "long_term_holding"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_04",
+      "label": "[股神案例] 巴菲特投资比亚迪 | 人物：沃伦·巴菲特 | 年份",
+      "content": "[股神案例] 巴菲特投资比亚迪 | 人物：沃伦·巴菲特 | 年份：2008 | 类别：成长投资 | 内容：经李录引荐以约 8 港元买入比亚迪，长期持有新能源龙头。 | 要点：长期看好新能源；管理层信任；耐心等待成长兑现",
+      "concepts": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "tags": [
+        "成长投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_05",
+      "label": "[股神案例] 芒格与喜诗糖果 | 人物：查理·芒格 | 年份：1",
+      "content": "[股神案例] 芒格与喜诗糖果 | 人物：查理·芒格 | 年份：1972 | 类别：价值投资 | 内容：以合理价格买优质公司(喜诗糖果)的转变，奠定伯克希尔风格。 | 要点：优质公司值得溢价；定价权与品牌；能力圈思维",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "circle_of_competence"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "circle_of_competence"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_06",
+      "label": "[股神案例] 索罗斯狙击英镑 | 人物：乔治·索罗斯 | 年份：",
+      "content": "[股神案例] 索罗斯狙击英镑 | 人物：乔治·索罗斯 | 年份：1992 | 类别：宏观对冲 | 内容：预判英镑汇率无法维持，大举做空获利约 10 亿美元，迫使英镑退出欧洲汇率机制。 | 要点：反身性识别失衡；不对称重注；宏观与货币分析；敢下重注并快速纠错",
+      "concepts": [
+        "reflexivity",
+        "short_selling",
+        "economic_cycle",
+        "risk_management"
+      ],
+      "tags": [
+        "宏观对冲",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "reflexivity",
+        "short_selling",
+        "economic_cycle",
+        "risk_management"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_07",
+      "label": "[股神案例] 索罗斯做空亚洲货币 | 人物：乔治·索罗斯 | 年",
+      "content": "[股神案例] 索罗斯做空亚洲货币 | 人物：乔治·索罗斯 | 年份：1997 | 类别：宏观对冲 | 内容：预判亚洲高杠杆脆弱性，做空泰铢等货币，成为亚洲金融危机代表案例。 | 要点：识别杠杆与汇率失衡；反身性加速崩溃；做空时机与规模",
+      "concepts": [
+        "reflexivity",
+        "short_selling",
+        "currency_crisis",
+        "contagion"
+      ],
+      "tags": [
+        "宏观对冲",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "reflexivity",
+        "short_selling",
+        "currency_crisis",
+        "contagion"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_08",
+      "label": "[股神案例] 彼得·林奇麦哲伦基金 | 人物：彼得·林奇 | 年",
+      "content": "[股神案例] 彼得·林奇麦哲伦基金 | 人物：彼得·林奇 | 年份：1977 | 类别：成长投资 | 内容：执掌麦哲伦基金 13 年年化约 29%，靠挖掘十倍股取胜。 | 要点：从生活发现十倍股；六类公司分治；灵活但不频繁交易",
+      "concepts": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "tags": [
+        "成长投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "timestamp": 1787152938553
+    },
+    {
+      "id": "ltm_stm_case_09",
+      "label": "[股神案例] 利弗莫尔做空 1929 与破产教训 | 人物：杰西",
+      "content": "[股神案例] 利弗莫尔做空 1929 与破产教训 | 人物：杰西·利弗莫尔 | 年份：1929 | 类别：趋势投机 | 内容：在 1929 年大崩盘中做空获利上亿美元，但多次破产最终结局悲剧。 | 要点：趋势为王顺势做空；纪律与情绪管理；过度杠杆的毁灭性；风险控制重于获利",
+      "concepts": [
+        "trend_following",
+        "short_selling",
+        "leverage",
+        "risk_management"
+      ],
+      "tags": [
+        "趋势投机",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "trend_following",
+        "short_selling",
+        "leverage",
+        "risk_management"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_10",
+      "label": "[股神案例] 达里奥桥水应对金融危机 | 人物：雷·达里奥 | ",
+      "content": "[股神案例] 达里奥桥水应对金融危机 | 人物：雷·达里奥 | 年份：2008 | 类别：宏观配置 | 内容：桥水提前识别债务泡沫，2008 年危机中逆势取得正收益。 | 要点：债务周期模型预警；风险平价分散；系统化决策；逆向布局",
+      "concepts": [
+        "asset_allocation",
+        "economic_cycle",
+        "risk_management",
+        "contrarian"
+      ],
+      "tags": [
+        "宏观配置",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "asset_allocation",
+        "economic_cycle",
+        "risk_management",
+        "contrarian"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_11",
+      "label": "[股神案例] 西蒙斯大奖章基金 | 人物：詹姆斯·西蒙斯 | 年",
+      "content": "[股神案例] 西蒙斯大奖章基金 | 人物：詹姆斯·西蒙斯 | 年份：1988 | 类别：量化投资 | 内容：文艺复兴大奖章基金依靠数学模型与高频信号，长期年化约 66%(费前)。 | 要点：数据驱动不靠主观；短线统计优势；模型持续迭代；规模受限反而有利",
+      "concepts": [
+        "quant_investing",
+        "arbitrage",
+        "risk_management"
+      ],
+      "tags": [
+        "量化投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "quant_investing",
+        "arbitrage",
+        "risk_management"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_12",
+      "label": "[股神案例] 保尔森做空次贷 | 人物：约翰·保尔森 | 年份：",
+      "content": "[股神案例] 保尔森做空次贷 | 人物：约翰·保尔森 | 年份：2007 | 类别：宏观对冲 | 内容：通过 CDS 做空次级抵押证券，2007-2008 年获利约 40 亿美元。 | 要点：识别系统性泡沫；用 CDS 表达空头观点；不对称赔率；逆势重注",
+      "concepts": [
+        "short_selling",
+        "black_swan",
+        "credit_crunch",
+        "risk_management"
+      ],
+      "tags": [
+        "宏观对冲",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "short_selling",
+        "black_swan",
+        "credit_crunch",
+        "risk_management"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_13",
+      "label": "[股神案例] 伯里大空头做空 CDS | 人物：迈克尔·伯里 |",
+      "content": "[股神案例] 伯里大空头做空 CDS | 人物：迈克尔·伯里 | 年份：2008 | 类别：逆向做空 | 内容：深入研究次贷底层资产后做空 CDS，坚持到危机爆发获利。 | 要点：独立深度研究；逆共识坚持；时间与资金匹配；识别尾部风险",
+      "concepts": [
+        "contrarian",
+        "short_selling",
+        "black_swan",
+        "fundamental_analysis"
+      ],
+      "tags": [
+        "逆向做空",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "contrarian",
+        "short_selling",
+        "black_swan",
+        "fundamental_analysis"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_14",
+      "label": "[股神案例] 德鲁肯米勒协同狙击英镑 | 人物：斯坦利·德鲁肯米",
+      "content": "[股神案例] 德鲁肯米勒协同狙击英镑 | 人物：斯坦利·德鲁肯米勒 | 年份：1992 | 类别：宏观对冲 | 内容：与索罗斯共同做空英镑，提出「全仓而下」的集中下注重哲学。 | 要点：高确定性时集中下注；宏观趋势配合；灵活调整仓位",
+      "concepts": [
+        "reflexivity",
+        "short_selling",
+        "risk_management"
+      ],
+      "tags": [
+        "宏观对冲",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "reflexivity",
+        "short_selling",
+        "risk_management"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_15",
+      "label": "[股神案例] 博格创立指数基金 | 人物：约翰·博格 | 年份：",
+      "content": "[股神案例] 博格创立指数基金 | 人物：约翰·博格 | 年份：1976 | 类别：指数投资 | 内容：创立先锋指数基金，让普通投资者以低成本分享市场长期回报。 | 要点：低成本神话；长期复利；分散市场风险",
+      "concepts": [
+        "index_investing",
+        "market_efficiency",
+        "compounding"
+      ],
+      "tags": [
+        "指数投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "index_investing",
+        "market_efficiency",
+        "compounding"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_16",
+      "label": "[股神案例] 斯文森耶鲁基金配置 | 人物：大卫·斯文森 | 年",
+      "content": "[股神案例] 斯文森耶鲁基金配置 | 人物：大卫·斯文森 | 年份：1985 | 类别：资产配置 | 内容：用另类资产重配为核心，长期跑赢传统股债组合。 | 要点：资产配置决定收益；另类资产多样性；长期视角；选择优秀管理人",
+      "concepts": [
+        "asset_allocation",
+        "diversification",
+        "long_term_holding"
+      ],
+      "tags": [
+        "资产配置",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "asset_allocation",
+        "diversification",
+        "long_term_holding"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_17",
+      "label": "[股神案例] 段永平抄底网易 | 人物：段永平 | 年份：200",
+      "content": "[股神案例] 段永平抄底网易 | 人物：段永平 | 年份：2001 | 类别：价值投资 | 内容：在网易约 0.8 美元时逆势重仓，收益数十倍。 | 要点：深度研究公司本质；逆势重仓；长期持有；巴菲特式价值投资",
+      "concepts": [
+        "value_investing",
+        "contrarian",
+        "circle_of_competence",
+        "compounding"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "contrarian",
+        "circle_of_competence",
+        "compounding"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_18",
+      "label": "[股神案例] 李录投资比亚迪 | 人物：李录 | 年份：2008",
+      "content": "[股神案例] 李录投资比亚迪 | 人物：李录 | 年份：2008 | 类别：成长投资 | 内容：深入研究新能源并引荐巴菲特，长期持有比亚迪获利巨大。 | 要点：长期产业判断；深度研究；与管理层同行",
+      "concepts": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "tags": [
+        "成长投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "growth_investing",
+        "long_term_holding",
+        "circle_of_competence"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_19",
+      "label": "[股神案例] 林园长持贵州茅台 | 人物：林园 | 年份：200",
+      "content": "[股神案例] 林园长持贵州茅台 | 人物：林园 | 年份：2003 | 类别：价值投资 | 内容：长期持有贵州茅台等消费龙头，分享品牌复利。 | 要点：消费品牌护城河；长期持有必选消费；复利积累",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_20",
+      "label": "[股神案例] 但斌价值投资茅台 | 人物：但斌 | 年份：200",
+      "content": "[股神案例] 但斌价值投资茅台 | 人物：但斌 | 年份：2007 | 类别：价值投资 | 内容：践行长期价值投资，长期重仓贵州茅台与优质白马。 | 要点：选伟大公司；与时间为友；承受波动不退出",
+      "concepts": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "tags": [
+        "价值投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "value_investing",
+        "moat",
+        "long_term_holding",
+        "compounding"
+      ],
+      "timestamp": 1787152938554
+    },
+    {
+      "id": "ltm_stm_case_21",
+      "label": "[股神案例] 冯柳逆向投资 | 人物：冯柳 | 年份：2015 ",
+      "content": "[股神案例] 冯柳逆向投资 | 人物：冯柳 | 年份：2015 | 类别：逆向投资 | 内容：高毅资产冯柳以逆向思维布局冷门、低迷标的。 | 要点：逆向与弱者思维；关注安全边际；远离拥挤交易",
+      "concepts": [
+        "contrarian",
+        "value_investing",
+        "margin_of_safety"
+      ],
+      "tags": [
+        "逆向投资",
+        "股神案例",
+        "投资知识",
+        "股神课堂"
+      ],
+      "strength": 0.95,
+      "abstractSpaceRef": [
+        "contrarian",
+        "value_investing",
+        "margin_of_safety"
+      ],
+      "timestamp": 1787152938554
+    }
+  ]
+}

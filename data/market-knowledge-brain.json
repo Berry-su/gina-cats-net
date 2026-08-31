@@ -1,0 +1,2258 @@
+{
+  "format": "cats-net",
+  "version": "1.0.0",
+  "savedAt": "2026-08-19T14:55:30.588Z",
+  "nodes": [
+    {
+      "id": "risk",
+      "name": "风险",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [],
+      "history": []
+    },
+    {
+      "id": "systemic_risk",
+      "name": "系统性风险",
+      "type": "abstract",
+      "attributes": {
+        "severity": 0.9
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [
+        {
+          "targetId": "bailout",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        },
+        {
+          "targetId": "contagion",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1998_russia_ltcm",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_enron",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_lehman_bankruptcy",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2010_euro_debt_crisis",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2011_us_downgrade",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2023_svb_collapse",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2013_money_crunch",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "bubble",
+      "name": "资产泡沫",
+      "type": "abstract",
+      "attributes": {
+        "danger": 0.9
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [
+        {
+          "targetId": "panic",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2000_dotcom_bubble",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2018_q4_selloff",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1999_519_bull",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2008_6124_to_1664",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2021_core_asset_unwind",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "leverage",
+      "name": "杠杆与负债",
+      "type": "abstract",
+      "attributes": {
+        "danger": 0.8
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "bubble",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        },
+        {
+          "targetId": "margin_trading",
+          "weight": 0.8,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1998_russia_ltcm",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2024_yen_carry_unwind",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "over_speculation",
+      "name": "过度投机",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "bubble",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2000_dotcom_bubble",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1996_peoples_daily",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1999_519_bull",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2008_6124_to_1664",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2021_core_asset_unwind",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_924_rally",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "liquidity_crisis",
+      "name": "流动性危机",
+      "type": "abstract",
+      "attributes": {
+        "urgency": 0.9
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "credit_crunch",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2013_taper_tantrum",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2023_svb_collapse",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2024_yen_carry_unwind",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2013_money_crunch",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2016_circuit_breaker",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "credit_crunch",
+      "name": "信贷紧缩",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "systemic_risk",
+          "weight": 0.8,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1998_russia_ltcm",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_lehman_bankruptcy",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2023_svb_collapse",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2013_money_crunch",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "currency_crisis",
+      "name": "货币危机",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.6000000000000001,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "contagion",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2015_china_crash_spill",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2016_brexit",
+          "activation": 0.6000000000000001
+        }
+      ]
+    },
+    {
+      "id": "debt_crisis",
+      "name": "债务危机",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.8,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [
+        {
+          "targetId": "contagion",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1998_russia_ltcm",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2010_euro_debt_crisis",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2011_us_downgrade",
+          "activation": 0.8
+        }
+      ]
+    },
+    {
+      "id": "panic",
+      "name": "恐慌抛售",
+      "type": "abstract",
+      "attributes": {
+        "intensity": 0.9
+      },
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "liquidity_crisis",
+          "weight": 0.8,
+          "type": "causal",
+          "bidirectional": true
+        },
+        {
+          "targetId": "circuit_breaker",
+          "weight": 0.5,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_enron",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_911_shock",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_lehman_bankruptcy",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2011_us_downgrade",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2015_china_crash_spill",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2016_brexit",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2024_yen_carry_unwind",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1996_peoples_daily",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2001_state_share_reduction",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2007_530_stamp_tax",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2008_6124_to_1664",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2016_circuit_breaker",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2020_covid_flash_drop",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2022_shanghai_lockdown",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "contagion",
+      "name": "危机传染",
+      "type": "relation",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "panic",
+          "weight": 0.7,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1997_asian_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_lehman_bankruptcy",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2010_euro_debt_crisis",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2013_taper_tantrum",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2015_china_crash_spill",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2008_6124_to_1664",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "black_swan",
+      "name": "黑天鹅事件",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "panic",
+          "weight": 0.8,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_911_shock",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2016_brexit",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2020_covid_flash_drop",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2022_shanghai_lockdown",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "recession",
+      "name": "经济衰退",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2000_dotcom_bubble",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2022_shanghai_lockdown",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "inflation",
+      "name": "通货膨胀",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.2,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "interest_rate",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 0.2
+        }
+      ]
+    },
+    {
+      "id": "deflation",
+      "name": "通货紧缩",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": []
+    },
+    {
+      "id": "monetary_policy",
+      "name": "货币政策",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "liquidity_crisis",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_911_shock",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2011_us_downgrade",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2013_taper_tantrum",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2018_q4_selloff",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1999_519_bull",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2020_covid_flash_drop",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_924_rally",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "interest_rate",
+      "name": "利率",
+      "type": "attribute",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 1,
+      "connections": [
+        {
+          "targetId": "monetary_policy",
+          "weight": 0.6,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2000_dotcom_bubble",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2013_taper_tantrum",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2018_q4_selloff",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2022_bear_market",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2023_svb_collapse",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2013_money_crunch",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "bailout",
+      "name": "救助与救市",
+      "type": "action",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_1998_russia_ltcm",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_gfc",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2008_lehman_bankruptcy",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2010_euro_debt_crisis",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2023_svb_collapse",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2020_covid_flash_drop",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_924_rally",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "regulation",
+      "name": "监管",
+      "type": "action",
+      "attributes": {},
+      "activation": 0.8,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "policy_market",
+          "weight": 0.6,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_enron",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1996_peoples_daily",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2001_state_share_reduction",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2007_530_stamp_tax",
+          "activation": 0.8
+        }
+      ]
+    },
+    {
+      "id": "deleveraging",
+      "name": "去杠杆",
+      "type": "action",
+      "attributes": {},
+      "activation": 0.6000000000000001,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "liquidity_crisis",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2010_euro_debt_crisis",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2018_q4_selloff",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.6000000000000001
+        }
+      ]
+    },
+    {
+      "id": "circuit_breaker",
+      "name": "熔断机制",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.6000000000000001,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330580,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_911_shock",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2020_covid_crash",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2016_circuit_breaker",
+          "activation": 0.6000000000000001
+        }
+      ]
+    },
+    {
+      "id": "fraud",
+      "name": "财务造假与欺诈",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.2,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2001_enron",
+          "activation": 0.2
+        }
+      ]
+    },
+    {
+      "id": "stop_loss",
+      "name": "止损与风控",
+      "type": "action",
+      "attributes": {
+        "urgency": 0.9
+      },
+      "activation": 0.6000000000000001,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 0.6000000000000001
+        }
+      ]
+    },
+    {
+      "id": "market_bottom",
+      "name": "市场底部",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330579,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2000_dotcom_bubble",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2001_state_share_reduction",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2008_6124_to_1664",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2020_covid_flash_drop",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2021_core_asset_unwind",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2022_shanghai_lockdown",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "policy_market",
+      "name": "政策市",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 1,
+      "confidence": 1,
+      "granularity": 3,
+      "connections": [
+        {
+          "targetId": "regulation",
+          "weight": 0.6,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1996_peoples_daily",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1999_519_bull",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2001_state_share_reduction",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2007_530_stamp_tax",
+          "activation": 0.8
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2016_circuit_breaker",
+          "activation": 1
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_924_rally",
+          "activation": 1
+        }
+      ]
+    },
+    {
+      "id": "retail_speculation",
+      "name": "散户博弈",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.4,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [],
+      "history": [
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_1999_519_bull",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 0.4
+        }
+      ]
+    },
+    {
+      "id": "margin_trading",
+      "name": "两融与杠杆资金",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.8,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "deleveraging",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2015_china_crash_spill",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330582,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2015_leverage_bubble_crash",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.6000000000000001
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2024_microcap_liquidity_crisis",
+          "activation": 0.8
+        }
+      ]
+    },
+    {
+      "id": "equity_pledge",
+      "name": "股权质押",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.2,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "margin_trading",
+          "weight": 0.6,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.2
+        }
+      ]
+    },
+    {
+      "id": "carry_trade",
+      "name": "套息交易",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.2,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "leverage",
+          "weight": 0.5,
+          "type": "association",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2024_yen_carry_unwind",
+          "activation": 0.2
+        }
+      ]
+    },
+    {
+      "id": "correlation",
+      "name": "相关性骤升",
+      "type": "relation",
+      "attributes": {},
+      "activation": 0.6000000000000001,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "contagion",
+          "weight": 0.6,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2015_china_crash_spill",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2024_yen_carry_unwind",
+          "activation": 0.4
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2021_core_asset_unwind",
+          "activation": 0.6000000000000001
+        }
+      ]
+    },
+    {
+      "id": "trade_war",
+      "name": "贸易战",
+      "type": "abstract",
+      "attributes": {},
+      "activation": 0.4,
+      "confidence": 1,
+      "granularity": 2,
+      "connections": [
+        {
+          "targetId": "recession",
+          "weight": 0.5,
+          "type": "causal",
+          "bidirectional": true
+        }
+      ],
+      "history": [
+        {
+          "ts": 1787151330581,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_global_2018_q4_selloff",
+          "activation": 0.2
+        },
+        {
+          "ts": 1787151330583,
+          "op": "activate",
+          "amount": 0.2,
+          "sourceId": "mm_stm_cn_2018_full_year_bear",
+          "activation": 0.4
+        }
+      ]
+    }
+  ],
+  "memory": [
+    {
+      "id": "mm_stm_global_1997_asian_crisis",
+      "label": "亚洲金融危机（1997年，泰国、印尼、韩国等亚洲新兴市场） | ",
+      "content": "亚洲金融危机（1997年，泰国、印尼、韩国等亚洲新兴市场） | 分类：货币危机与债务危机 | 触发：泰国被迫放弃泰铢与美元固定汇率，资本外逃，外债高企叠加短借长贷的期限与货币双重错配 | 影响：东南亚货币大幅贬值，股市汇市崩盘，韩国接受 IMF 救助，危机蔓延至全球新兴市场 | 教训：固定汇率与高杠杆、短期外债的组合极其脆弱，需警惕资本账户开放过快与货币错配",
+      "concepts": [
+        "currency_crisis",
+        "debt_crisis",
+        "leverage",
+        "contagion",
+        "panic",
+        "systemic_risk"
+      ],
+      "activationPattern": {
+        "currency_crisis": 1,
+        "debt_crisis": 1,
+        "leverage": 1,
+        "contagion": 1,
+        "panic": 1,
+        "systemic_risk": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "mm_stm_global_1998_russia_ltcm",
+      "label": "俄罗斯债务违约与 LTCM 倒闭（1998年，俄罗斯与全球对冲基",
+      "content": "俄罗斯债务违约与 LTCM 倒闭（1998年，俄罗斯与全球对冲基金市场） | 分类：债务违约与高杠杆 | 触发：俄罗斯宣布卢布贬值并违约国内债务，高杠杆对冲基金 LTCM 押注收敛策略失败濒临破产 | 影响：全球信用利差飙升，LTCM 濒临破产，由美联储组织银团救助以避免系统性崩溃 | 教训：高杠杆叠加尾部风险模型失效可导致自毁灭，大而不能倒的救助会带来道德风险",
+      "concepts": [
+        "debt_crisis",
+        "leverage",
+        "systemic_risk",
+        "bailout",
+        "credit_crunch"
+      ],
+      "activationPattern": {
+        "debt_crisis": 1,
+        "leverage": 1,
+        "systemic_risk": 1,
+        "bailout": 1,
+        "credit_crunch": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "mm_stm_global_2000_dotcom_bubble",
+      "label": "互联网泡沫破裂（2000年，美国纳斯达克） | 分类：资产泡沫破",
+      "content": "互联网泡沫破裂（2000年，美国纳斯达克） | 分类：资产泡沫破裂 | 触发：大量无盈利互联网公司估值过高，美联储加息收紧流动性，泡沫随之破裂 | 影响：纳斯达克指数自最高点暴跌约 78%，科技股财富蒸发，美国进入温和衰退 | 教训：脱离基本面的过度投机终会均值回归，需警惕概念炒作与估值泡沫",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "interest_rate",
+        "recession",
+        "market_bottom"
+      ],
+      "activationPattern": {
+        "bubble": 1,
+        "over_speculation": 1,
+        "interest_rate": 1,
+        "recession": 1,
+        "market_bottom": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "mm_stm_global_2001_enron",
+      "label": "安然公司财务造假丑闻（2001年，美国能源与审计行业） | 分类",
+      "content": "安然公司财务造假丑闻（2001年，美国能源与审计行业） | 分类：财务造假 | 触发：安然通过特殊目的实体隐藏巨额债务，财务造假被揭露后投资者信心崩塌 | 影响：安然破产，审计巨头安达信解体，推动美国出台萨班斯-奥克斯利法案强化公司治理 | 教训：财务造假会摧毁市场信任，独立审计与公司治理是资本市场的基石",
+      "concepts": [
+        "fraud",
+        "systemic_risk",
+        "regulation",
+        "panic"
+      ],
+      "activationPattern": {
+        "fraud": 1,
+        "systemic_risk": 1,
+        "regulation": 1,
+        "panic": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330579
+    },
+    {
+      "id": "mm_stm_global_2001_911_shock",
+      "label": "9·11 事件市场冲击（2001年，美股与全球市场） | 分类：",
+      "content": "9·11 事件市场冲击（2001年，美股与全球市场） | 分类：黑天鹅与恐慌 | 触发：恐怖袭击导致纽交所停市多日，复市后市场出现恐慌性抛售 | 影响：复市首周道指创下单周最大跌幅之一，全球股市同步下挫，随后靠政策刺激逐步企稳 | 教训：黑天鹅事件不可预测，需要流动性缓冲与应急预案而非事后追悔",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "circuit_breaker",
+        "monetary_policy"
+      ],
+      "activationPattern": {
+        "black_swan": 1,
+        "panic": 1,
+        "circuit_breaker": 1,
+        "monetary_policy": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "mm_stm_global_2008_gfc",
+      "label": "全球金融危机（次贷危机）（2008年，美国与全球金融体系） | ",
+      "content": "全球金融危机（次贷危机）（2008年，美国与全球金融体系） | 分类：系统性金融危机 | 触发：次级抵押贷款证券化泛滥叠加房价下跌，雷曼破产引爆全球信用冻结 | 影响：全球股市腰斩，多家大型金融机构倒闭或被救助，随后引发大衰退 | 教训：高杠杆与证券化错配、缺乏审慎监管会酿成系统性风险，系统重要性机构需强监管",
+      "concepts": [
+        "credit_crunch",
+        "leverage",
+        "systemic_risk",
+        "bubble",
+        "bailout",
+        "recession",
+        "contagion"
+      ],
+      "activationPattern": {
+        "credit_crunch": 1,
+        "leverage": 1,
+        "systemic_risk": 1,
+        "bubble": 1,
+        "bailout": 1,
+        "recession": 1,
+        "contagion": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "mm_stm_global_2008_lehman_bankruptcy",
+      "label": "雷曼兄弟破产（2008年，美国金融体系） | 分类：系统性风险导",
+      "content": "雷曼兄弟破产（2008年，美国金融体系） | 分类：系统性风险导火索 | 触发：雷曼兄弟资不抵债且政府拒绝救助，宣布破产保护 | 影响：货币市场基金净值跌破 1，全球信用冻结，市场恐慌达到顶峰 | 教训：关键节点风险不清与救助边界模糊会加速传染，需要清晰的处置预案",
+      "concepts": [
+        "systemic_risk",
+        "credit_crunch",
+        "panic",
+        "contagion",
+        "bailout"
+      ],
+      "activationPattern": {
+        "systemic_risk": 1,
+        "credit_crunch": 1,
+        "panic": 1,
+        "contagion": 1,
+        "bailout": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330580
+    },
+    {
+      "id": "mm_stm_global_2010_euro_debt_crisis",
+      "label": "欧洲主权债务危机（2010年，欧元区（希腊等外围国家）） | 分",
+      "content": "欧洲主权债务危机（2010年，欧元区（希腊等外围国家）） | 分类：主权债务危机 | 触发：希腊主权债务不可持续，财政赤字与债务集中暴露，欧元区缺乏共同财政兜底 | 影响：多国国债收益率飙升，欧猪五国相继接受救助，欧元一度面临解体风险 | 教训：货币联盟缺乏财政与银行联盟是结构性缺陷，高债务需要长期去杠杆",
+      "concepts": [
+        "debt_crisis",
+        "contagion",
+        "systemic_risk",
+        "bailout",
+        "deleveraging"
+      ],
+      "activationPattern": {
+        "debt_crisis": 1,
+        "contagion": 1,
+        "systemic_risk": 1,
+        "bailout": 1,
+        "deleveraging": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2011_us_downgrade",
+      "label": "美国主权评级下调与闪崩（2011年，美股与全球市场） | 分类：",
+      "content": "美国主权评级下调与闪崩（2011年，美股与全球市场） | 分类：信用冲击 | 触发：标普历史性下调美国主权信用评级，美国债务上限僵局引发避险情绪 | 影响：美股暴跌，金价暴涨，避险情绪蔓延全球市场 | 教训：主权信用并非无风险，政策僵局会显著放大市场波动",
+      "concepts": [
+        "debt_crisis",
+        "panic",
+        "monetary_policy",
+        "systemic_risk"
+      ],
+      "activationPattern": {
+        "debt_crisis": 1,
+        "panic": 1,
+        "monetary_policy": 1,
+        "systemic_risk": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2013_taper_tantrum",
+      "label": "缩减恐慌（退出 QE）（2013年，新兴市场） | 分类：流动性",
+      "content": "缩减恐慌（退出 QE）（2013年，新兴市场） | 分类：流动性急转 | 触发：美联储暗示缩减量化宽松，新兴市场资本迅速回流美元资产 | 影响：新兴市场货币与股市重挫，印度、印尼等被迫加息以稳定汇率 | 教训：高杠杆新兴市场对美元流动性高度敏感，需警惕资本流动逆转",
+      "concepts": [
+        "monetary_policy",
+        "interest_rate",
+        "liquidity_crisis",
+        "contagion"
+      ],
+      "activationPattern": {
+        "monetary_policy": 1,
+        "interest_rate": 1,
+        "liquidity_crisis": 1,
+        "contagion": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2015_china_crash_spill",
+      "label": "中国股灾与全球闪崩（8·24）（2015年，中国A股与全球市场）",
+      "content": "中国股灾与全球闪崩（8·24）（2015年，中国A股与全球市场） | 分类：风险传染 | 触发：中国A股杠杆牛破灭暴跌，伴随人民币贬值引发全球风险重估 | 影响：8月24日全球股市遭遇黑色星期一，道指盘初跌逾千点，恐慌情绪全球蔓延 | 教训：新兴市场金融波动会通过预期与资本流动传染全球，需重视跨境相关性",
+      "concepts": [
+        "contagion",
+        "panic",
+        "margin_trading",
+        "currency_crisis",
+        "correlation"
+      ],
+      "activationPattern": {
+        "contagion": 1,
+        "panic": 1,
+        "margin_trading": 1,
+        "currency_crisis": 1,
+        "correlation": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2016_brexit",
+      "label": "英国脱欧公投（2016年，英镑与英国股市） | 分类：黑天鹅与政",
+      "content": "英国脱欧公投（2016年，英镑与英国股市） | 分类：黑天鹅与政治事件 | 触发：英国公投意外通过脱欧，政治不确定性骤然上升 | 影响：英镑单日暴跌创纪录，全球股市重挫，避险资产大涨 | 教训：政治事件可成为黑天鹅，重大不确定性前应降低仓位",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "currency_crisis"
+      ],
+      "activationPattern": {
+        "black_swan": 1,
+        "panic": 1,
+        "currency_crisis": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2018_q4_selloff",
+      "label": "2018 年四季度全球暴跌（2018年，美股与全球市场） | 分",
+      "content": "2018 年四季度全球暴跌（2018年，美股与全球市场） | 分类：加息与贸易战 | 触发：美联储持续加息与缩表，叠加中美贸易战升级，成长股估值承压 | 影响：美股12月暴跌，标普一度跌入技术性熊市边缘，回吐全年涨幅 | 教训：紧缩周期与外部摩擦叠加时，高估值资产最脆弱",
+      "concepts": [
+        "interest_rate",
+        "monetary_policy",
+        "trade_war",
+        "deleveraging",
+        "bubble"
+      ],
+      "activationPattern": {
+        "interest_rate": 1,
+        "monetary_policy": 1,
+        "trade_war": 1,
+        "deleveraging": 1,
+        "bubble": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2020_covid_crash",
+      "label": "新冠疫情全球崩盘（2020年，美股与全球市场） | 分类：黑天鹅",
+      "content": "新冠疫情全球崩盘（2020年，美股与全球市场） | 分类：黑天鹅与流动性危机 | 触发：新冠疫情全球爆发导致经济停摆，恐慌抛售引爆流动性挤兑 | 影响：美股10天内四次熔断，全球股市以历史最快速度跌入熊市，后靠天量宽松快速反弹 | 教训：极端黑天鹅下现金为王，流动性挤兑会放大跌幅，但政策托底需有度",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "liquidity_crisis",
+        "circuit_breaker",
+        "bailout",
+        "recession"
+      ],
+      "activationPattern": {
+        "black_swan": 1,
+        "panic": 1,
+        "liquidity_crisis": 1,
+        "circuit_breaker": 1,
+        "bailout": 1,
+        "recession": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2022_bear_market",
+      "label": "全球加息与俄乌冲突熊市（2022年，美股与全球市场） | 分类：",
+      "content": "全球加息与俄乌冲突熊市（2022年，美股与全球市场） | 分类：通胀与地缘风险 | 触发：高通胀迫使美联储激进加息，俄乌冲突推升能源与粮食价格 | 影响：标普与纳指进入熊市，科技成长股重挫，出现股债双杀 | 教训：高通胀与激进加息会重创高久期资产，地缘风险推高尾部风险",
+      "concepts": [
+        "inflation",
+        "interest_rate",
+        "monetary_policy",
+        "bubble",
+        "recession",
+        "black_swan"
+      ],
+      "activationPattern": {
+        "inflation": 1,
+        "interest_rate": 1,
+        "monetary_policy": 1,
+        "bubble": 1,
+        "recession": 1,
+        "black_swan": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2023_svb_collapse",
+      "label": "硅谷银行倒闭与区域银行危机（2023年，美国银行业） | 分类：",
+      "content": "硅谷银行倒闭与区域银行危机（2023年，美国银行业） | 分类：流动性挤兑 | 触发：美联储加息致银行持有债券浮亏，硅谷银行遭存款挤兑而倒闭 | 影响：多家区域银行被接管，全球银行股重挫，监管与央行紧急提供流动性支持 | 教训：资产负债期限错配在加息周期中致命，存款挤兑可在数小时内击垮银行",
+      "concepts": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "systemic_risk",
+        "bailout",
+        "interest_rate"
+      ],
+      "activationPattern": {
+        "liquidity_crisis": 1,
+        "credit_crunch": 1,
+        "systemic_risk": 1,
+        "bailout": 1,
+        "interest_rate": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_global_2024_yen_carry_unwind",
+      "label": "日元套息交易平仓冲击（2024年，日经指数与全球市场） | 分类",
+      "content": "日元套息交易平仓冲击（2024年，日经指数与全球市场） | 分类：套息交易逆转 | 触发：日本央行加息叠加美国衰退担忧，日元急升引发套息交易大规模平仓 | 影响：日经225单日暴跌逾12%，全球股市震荡，波动率指数飙升 | 教训：拥挤交易在反转时踩踏严重，杠杆资金与衍生品会放大踩踏",
+      "concepts": [
+        "carry_trade",
+        "leverage",
+        "panic",
+        "correlation",
+        "liquidity_crisis"
+      ],
+      "activationPattern": {
+        "carry_trade": 1,
+        "leverage": 1,
+        "panic": 1,
+        "correlation": 1,
+        "liquidity_crisis": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_cn_1996_peoples_daily",
+      "label": "12 道金牌与人民日报社论暴跌（1996年，上证指数） | 分类",
+      "content": "12 道金牌与人民日报社论暴跌（1996年，上证指数） | 分类：政策降温 | 触发：股市过热，监管连续出台降温政策，人民日报刊发《正确认识当前股票市场》社论 | 影响：上证指数连续两天近乎全线跌停，随后数日累计深跌 | 教训：政策市情绪波动剧烈，监管态度突变是A股重要的系统性变量",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "panic",
+        "over_speculation"
+      ],
+      "activationPattern": {
+        "policy_market": 1,
+        "regulation": 1,
+        "panic": 1,
+        "over_speculation": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330581
+    },
+    {
+      "id": "mm_stm_cn_1999_519_bull",
+      "label": "5·19 行情（政策牛）（1999年，上证指数） | 分类：政策",
+      "content": "5·19 行情（政策牛）（1999年，上证指数） | 分类：政策驱动牛市 | 触发：政策鼓励股市发展、降息并提供舆论支持，科技与网络股爆发 | 影响：上证指数一个多月大涨约60%，网络股题材被爆炒 | 教训：政策驱动的快牛往往伴随题材投机，后续容易泡沫化",
+      "concepts": [
+        "policy_market",
+        "over_speculation",
+        "bubble",
+        "monetary_policy",
+        "retail_speculation"
+      ],
+      "activationPattern": {
+        "policy_market": 1,
+        "over_speculation": 1,
+        "bubble": 1,
+        "monetary_policy": 1,
+        "retail_speculation": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2001_state_share_reduction",
+      "label": "国有股减持与四年熊市（2001年，上证指数） | 分类：制度冲击",
+      "content": "国有股减持与四年熊市（2001年，上证指数） | 分类：制度冲击 | 触发：国有股减持方案引发市场对扩容抽血的担忧，政策反复加剧不确定性 | 影响：上证自2245点开启长达约4年熊市，最低跌至998点 | 教训：制度设计与投资者预期的稳定至关重要，股权分置等结构性问题需审慎处理",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "market_bottom",
+        "panic"
+      ],
+      "activationPattern": {
+        "policy_market": 1,
+        "regulation": 1,
+        "market_bottom": 1,
+        "panic": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2007_530_stamp_tax",
+      "label": "5·30 印花税冲击（2007年，上证指数） | 分类：政策降温",
+      "content": "5·30 印花税冲击（2007年，上证指数） | 分类：政策降温 | 触发：财政部凌晨上调印花税税率以抑制股市过热 | 影响：上证指数5天内暴跌约20%，数千只个股跌停，随后宽幅震荡 | 教训：政策突袭对市场情绪打击极大，投资者需防范政策黑天鹅",
+      "concepts": [
+        "policy_market",
+        "regulation",
+        "panic"
+      ],
+      "activationPattern": {
+        "policy_market": 1,
+        "regulation": 1,
+        "panic": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2008_6124_to_1664",
+      "label": "6124 点见顶与金融危机暴跌（2008年，上证指数） | 分类",
+      "content": "6124 点见顶与金融危机暴跌（2008年，上证指数） | 分类：泡沫破裂与外部冲击 | 触发：前期过度投机推升至6124点，随全球金融危机爆发而崩盘 | 影响：上证指数一年内从6124点跌至1664点，跌幅约73% | 教训：大泡沫必有深回调，外部冲击与高估值叠加时风险巨大",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "contagion",
+        "market_bottom",
+        "panic"
+      ],
+      "activationPattern": {
+        "bubble": 1,
+        "over_speculation": 1,
+        "contagion": 1,
+        "market_bottom": 1,
+        "panic": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2013_money_crunch",
+      "label": "钱荒与同业利率飙升（2013年，上证指数与债券市场） | 分类：",
+      "content": "钱荒与同业利率飙升（2013年，上证指数与债券市场） | 分类：流动性危机 | 触发：银行间市场流动性骤紧，隔夜回购利率一度飙升至30%以上 | 影响：A股急跌，债市重挫，暴露影子银行与期限错配风险 | 教训：金融体系流动性紧张会迅速传导至股市，需关注银行间利率异动",
+      "concepts": [
+        "liquidity_crisis",
+        "credit_crunch",
+        "interest_rate",
+        "systemic_risk"
+      ],
+      "activationPattern": {
+        "liquidity_crisis": 1,
+        "credit_crunch": 1,
+        "interest_rate": 1,
+        "systemic_risk": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2015_leverage_bubble_crash",
+      "label": "2015 年股灾（杠杆牛破灭）（2015年，上证指数与创业板） ",
+      "content": "2015 年股灾（杠杆牛破灭）（2015年，上证指数与创业板） | 分类：杠杆泡沫破裂 | 触发：场外配资与两融推动的快牛泡沫破裂，去杠杆引发强制平仓踩踏 | 影响：A股两个月内上演千股跌停、千股停牌，上证最大回撤超40% | 教训：杠杆资金助涨助跌，流动性枯竭与强制平仓会造成极端踩踏，务必严格止损",
+      "concepts": [
+        "leverage",
+        "margin_trading",
+        "bubble",
+        "over_speculation",
+        "panic",
+        "liquidity_crisis",
+        "stop_loss",
+        "retail_speculation"
+      ],
+      "activationPattern": {
+        "leverage": 1,
+        "margin_trading": 1,
+        "bubble": 1,
+        "over_speculation": 1,
+        "panic": 1,
+        "liquidity_crisis": 1,
+        "stop_loss": 1,
+        "retail_speculation": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330582
+    },
+    {
+      "id": "mm_stm_cn_2016_circuit_breaker",
+      "label": "熔断机制失灵（2016年，沪深300） | 分类：制度失灵 | ",
+      "content": "熔断机制失灵（2016年，沪深300） | 分类：制度失灵 | 触发：熔断机制首周即被触发，磁吸效应加剧恐慌抛售 | 影响：沪深300两度熔断导致市场提前收盘，熔断机制随后被暂停 | 教训：制度设计需符合市场微观结构，熔断阈值不当会放大踩踏",
+      "concepts": [
+        "circuit_breaker",
+        "panic",
+        "liquidity_crisis",
+        "policy_market"
+      ],
+      "activationPattern": {
+        "circuit_breaker": 1,
+        "panic": 1,
+        "liquidity_crisis": 1,
+        "policy_market": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2018_full_year_bear",
+      "label": "全年熊市（贸易战与股权质押）（2018年，上证指数） | 分类：",
+      "content": "全年熊市（贸易战与股权质押）（2018年，上证指数） | 分类：去杠杆与外部摩擦 | 触发：中美贸易战升级，叠加国内去杠杆与股权质押风险集中暴露 | 影响：上证自3587点跌至2440点，全年单边下行，股权质押爆仓此起彼伏 | 教训：去杠杆周期与外部摩擦共振时，高质押与高杠杆标的风险最大",
+      "concepts": [
+        "trade_war",
+        "deleveraging",
+        "equity_pledge",
+        "margin_trading",
+        "market_bottom",
+        "stop_loss"
+      ],
+      "activationPattern": {
+        "trade_war": 1,
+        "deleveraging": 1,
+        "equity_pledge": 1,
+        "margin_trading": 1,
+        "market_bottom": 1,
+        "stop_loss": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2020_covid_flash_drop",
+      "label": "春节后疫情闪跌与快速反弹（2020年，上证指数与创业板） | 分",
+      "content": "春节后疫情闪跌与快速反弹（2020年，上证指数与创业板） | 分类：黑天鹅与政策托底 | 触发：新冠疫情导致春节后首个交易日出现恐慌性抛售 | 影响：上证单日跌逾7%、近3000股跌停，随后政策宽松与外资回流带来快速V型反弹 | 教训：一次性冲击后的政策托底能快速修复，恐慌杀跌反而可能提供机会",
+      "concepts": [
+        "black_swan",
+        "panic",
+        "bailout",
+        "monetary_policy",
+        "market_bottom"
+      ],
+      "activationPattern": {
+        "black_swan": 1,
+        "panic": 1,
+        "bailout": 1,
+        "monetary_policy": 1,
+        "market_bottom": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2021_core_asset_unwind",
+      "label": "核心资产抱团瓦解（2021年，沪深300与茅指数） | 分类：抱",
+      "content": "核心资产抱团瓦解（2021年，沪深300与茅指数） | 分类：抱团瓦解 | 触发：抱团白马股估值过高，流动性边际收紧，茅指数自高位回落 | 影响：白酒、医药、新能源等核心资产持续阴跌，基金净值大面积回撤 | 教训：抱团的尽头是踩踏，估值透支后均值回归不可避免",
+      "concepts": [
+        "bubble",
+        "over_speculation",
+        "correlation",
+        "market_bottom"
+      ],
+      "activationPattern": {
+        "bubble": 1,
+        "over_speculation": 1,
+        "correlation": 1,
+        "market_bottom": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2022_shanghai_lockdown",
+      "label": "上海封控冲击（2022年，上证指数与创业板） | 分类：供给冲击",
+      "content": "上海封控冲击（2022年，上证指数与创业板） | 分类：供给冲击与情绪冲击 | 触发：上海疫情封控扰乱供应链，叠加美联储加息与俄乌冲突 | 影响：上证跌破3000点、创业板连创新低，市场信心受挫 | 教训：供应链中断与内外利空叠加会放大跌幅，需关注经济基本盘",
+      "concepts": [
+        "panic",
+        "recession",
+        "black_swan",
+        "market_bottom"
+      ],
+      "activationPattern": {
+        "panic": 1,
+        "recession": 1,
+        "black_swan": 1,
+        "market_bottom": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2024_microcap_liquidity_crisis",
+      "label": "微盘股与雪球产品流动性危机（2024年，中证2000与微盘股） ",
+      "content": "微盘股与雪球产品流动性危机（2024年，中证2000与微盘股） | 分类：流动性危机 | 触发：雪球产品集中敲入、量化DMA去杠杆与两融爆仓，微盘股流动性枯竭 | 影响：微盘股连续暴跌，多只相关ETF跌幅巨大，最终国家队入市托底 | 教训：杠杆、衍生品与小市值低流动性叠加会酿成踩踏，需关注微观流动性",
+      "concepts": [
+        "liquidity_crisis",
+        "leverage",
+        "margin_trading",
+        "panic",
+        "bailout",
+        "stop_loss"
+      ],
+      "activationPattern": {
+        "liquidity_crisis": 1,
+        "leverage": 1,
+        "margin_trading": 1,
+        "panic": 1,
+        "bailout": 1,
+        "stop_loss": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    },
+    {
+      "id": "mm_stm_cn_2024_924_rally",
+      "label": "9·24 政策刺激行情（2024年，上证指数与创业板） | 分类",
+      "content": "9·24 政策刺激行情（2024年，上证指数与创业板） | 分类：政策反转 | 触发：央行、证监会等多部门密集出台降准降息与资本市场支持政策 | 影响：上证指数单周暴涨、成交额创天量，市场情绪由冰点转向狂热 | 教训：政策反转可快速修复估值，但需警惕情绪过热后的回调",
+      "concepts": [
+        "policy_market",
+        "monetary_policy",
+        "bailout",
+        "over_speculation"
+      ],
+      "activationPattern": {
+        "policy_market": 1,
+        "monetary_policy": 1,
+        "bailout": 1,
+        "over_speculation": 1
+      },
+      "strength": 0.95,
+      "timestamp": 1787151330583
+    }
+  ],
+  "meta": {
+    "nodeCount": 31,
+    "memoryCount": 31
+  }
+}

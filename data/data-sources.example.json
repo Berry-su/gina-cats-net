@@ -1,0 +1,16 @@
+{
+  "proxy": "http://127.0.0.1:7890",
+  "proxyEnabled": false,
+  "tushare": {
+    "token": "在此填入你的 Tushare token（或设置环境变量 TUSHARE_TOKEN）"
+  },
+  "alpaca": {
+    "key": "在此填入 Alpaca API Key（或设置 ALPACA_KEY）",
+    "secret": "在此填入 Alpaca API Secret（或设置 ALPACA_SECRET）"
+  },
+  "newsFeeds": [
+    { "outlet": "路透社", "source": "Reuters", "market": "US", "url": "https://feeds.reuters.com/reuters/businessNews" },
+    { "outlet": "路透社", "source": "Reuters", "market": "CN", "url": "https://feeds.reuters.com/reuters/chinaNews" }
+  ],
+  "userAgent": "gina-agent/0.1 (research; contact: user)"
+}
