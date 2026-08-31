@@ -121,6 +121,10 @@ export class CatsNet {
 
   /**
    * 激活扩散：从种子概念沿连接向邻域传播激活。
+   *
+   * v0.2.0 收口（C-1.1 层次激活扩散）：走 ConceptNode.spreadActivation 跨层权重表 +
+   * HOP_DECAY_FACTOR，不再用 this.decayFactor 常数衰减。
+   *
    * @param {Array<{id:string, amount:number}>|Object<string,number>} seeds 扩散种子
    * @param {object} [options]
    * @param {number} [options.iterations]   最大迭代次数（覆盖构造默认）
@@ -158,10 +162,17 @@ export class CatsNet {
           }
           const target = this.nodes.get(targetId)
           if (!target) continue
-          const boost = src.activation * meta.weight * this.decayFactor
-          if (boost < minActivation) continue
+          // 跨层激活扩散：从 src 节点查 src.level → target.level 转换权重
+          //   effective = transition(src.level → target.level) × HOP_DECAY_FACTOR × incoming
+          // 取代 v0.1.0 的 `src.activation * meta.weight * this.decayFactor` 常数衰减
+          // ADR-002 §3.1.3 文字笔误修正：原文写 target.spreadActivation，
+          //   但 spreadActivation 语义是 this.level → targetLevel，
+          //   应以 src 为 this、target.level 为目标层
+          const incoming = src.activation * meta.weight
+          const effective = src.spreadActivation(target.level, incoming)
+          if (effective < minActivation) continue
           const before = target.activation
-          target.activate(boost, src.id)
+          target.activate(effective, src.id)
           if (target.activation - before > minActivation) changed = true
           activated.add(targetId)
         }
@@ -170,6 +181,107 @@ export class CatsNet {
     }
 
     return { iterations: iter, activated: Array.from(activated) }
+  }
+
+  /**
+   * 跨层激活扩散（公开 API · C-1.1）。
+   *
+   * 以 rootId 为根，沿连接向邻域传播激活；与 spreadActivation 区别：
+   *   - 接受 options.levels 限定参与扩散的层次（默认 3 层全开）
+   *   - 接受 options.maxDepth 限制扩散深度（默认 3 = 每层一跳）
+   *   - 返回值带每层分组 + 完整 trace（节点级 hopPath），便于 3D 可视化
+   *
+   * @param {string} rootId 根概念 id
+   * @param {object} [options]
+   * @param {string[]} [options.levels] 参与扩散的层次，默认全部 3 层
+   * @param {number} [options.maxDepth] 最大扩散深度（层数），默认 3
+   * @param {number} [options.minActivation] 低于该值停止传播，默认 0.01
+   * @param {number} [options.seedAmount] 根节点初始激活量，默认 1.0
+   * @returns {{
+   *   activated: string[],
+   *   layers: { episodic: string[], semantic: string[], abstract: string[] },
+   *   trace: Array<{ nodeId: string, level: string, activation: number, hopPath: string[] }>
+   * }}
+   */
+  activateHierarchical(
+    rootId,
+    { levels = ['episodic', 'semantic', 'abstract'], maxDepth = 3, minActivation = 0.01, seedAmount = 1.0 } = {},
+  ) {
+    this._guard()
+    const root = this.nodes.get(rootId)
+    if (!root) {
+      return { activated: [], layers: { episodic: [], semantic: [], abstract: [] }, trace: [] }
+    }
+    // 限定参与扩散的层次
+    const allowedLevels = new Set(levels)
+    const activated = new Set()
+    const layers = { episodic: [], semantic: [], abstract: [] }
+    const trace = []
+
+    // BFS 按深度推进：每层深度最多一跳跨层
+    // 深度 0：根节点自身（激活）
+    root.activate(seedAmount, 'seed:activateHierarchical')
+    activated.add(root.id)
+    layers[root.level]?.push(root.id)
+    trace.push({ nodeId: root.id, level: root.level, activation: root.activation, hopPath: [root.id] })
+
+    // 深度 1..maxDepth
+    let frontier = [root]
+    for (let depth = 1; depth <= maxDepth && frontier.length > 0; depth++) {
+      const next = []
+      for (const src of frontier) {
+        if (!allowedLevels.has(src.level)) continue
+        for (const [targetId, meta] of src.connections) {
+          if (activated.has(targetId)) continue
+          const target = this.nodes.get(targetId)
+          if (!target) continue
+          if (!allowedLevels.has(target.level)) continue
+          const incoming = src.activation * meta.weight
+          const effective = src.spreadActivation(target.level, incoming)
+          if (effective < minActivation) continue
+          target.activate(effective, src.id)
+          activated.add(target.id)
+          layers[target.level]?.push(target.id)
+          trace.push({
+            nodeId: target.id,
+            level: target.level,
+            activation: target.activation,
+            hopPath: [...(trace.find((t) => t.nodeId === src.id)?.hopPath ?? [src.id]), target.id],
+          })
+          next.push(target)
+        }
+      }
+      frontier = next
+    }
+
+    return { activated: Array.from(activated), layers, trace }
+  }
+
+  /**
+   * 按层统计激活分布（公开 API · C-1.1）。
+   * @returns {{
+   *   episodic: { count: number, totalActivation: number, avgActivation: number },
+   *   semantic: { count: number, totalActivation: number, avgActivation: number },
+   *   abstract: { count: number, totalActivation: number, avgActivation: number }
+   * }}
+   */
+  getLevelActivationSummary() {
+    const summary = {
+      episodic: { count: 0, totalActivation: 0, avgActivation: 0 },
+      semantic: { count: 0, totalActivation: 0, avgActivation: 0 },
+      abstract: { count: 0, totalActivation: 0, avgActivation: 0 },
+    }
+    for (const node of this.nodes.values()) {
+      const slot = summary[node.level]
+      if (!slot) continue
+      slot.count += 1
+      slot.totalActivation += node.activation
+    }
+    for (const key of Object.keys(summary)) {
+      const slot = summary[key]
+      slot.avgActivation = slot.count > 0 ? slot.totalActivation / slot.count : 0
+    }
+    return summary
   }
 
   // ---------------------------------------------------------------------------
