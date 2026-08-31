@@ -1,9 +1,20 @@
 {
-  "name": "gina-agent",
+  "name": "@berrysu/gina-core",
   "version": "0.1.0",
-  "description": "Gina Agent 后端核心 —— CATS-Net 类脑抽象空间内核 + 记忆系统 + 状态机 + MCP 工具调度 + 股票交易核心 + 毫米波SOS急救",
+  "description": "GINA brain core —— 9-layer architecture kernel: CATS-Net + memory + state machine + MCP + analysts + data engine + data sources + trading + business",
   "type": "module",
-  "main": "main.js",
+  "main": "./src/cats_net/index.js",
+  "exports": {
+    "./cats_net": "./src/cats_net/index.js",
+    "./analysts": "./src/analysts/index.js",
+    "./state_machine": "./src/state_machine/index.js",
+    "./memory": "./src/memory/index.js",
+    "./mcp": "./src/mcp/index.js",
+    "./data_engine": "./src/data_engine/index.js",
+    "./data_sources": "./src/data_sources/index.js",
+    "./trading": "./src/trading/index.js",
+    "./business": "./src/business/index.js"
+  },
   "scripts": {
     "start": "node main.js",
     "test": "node --test tests/",
@@ -13,5 +24,16 @@
     "node": ">=18.0.0"
   },
   "license": "MIT",
-  "private": true
+  "private": true,
+  "publishConfig": {
+    "access": "restricted"
+  },
+  "keywords": [
+    "gina",
+    "cats-net",
+    "brain",
+    "agent",
+    "memory",
+    "state-machine"
+  ]
 }
