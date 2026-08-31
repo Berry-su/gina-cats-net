@@ -5,7 +5,16 @@
  */
 
 export { CatsNet } from './cats-net.js'
-export { ConceptNode, CONCEPT_TYPES, ACTIVATION_MIN, ACTIVATION_MAX } from './concept-node.js'
+export {
+  ConceptNode,
+  CONCEPT_TYPES,
+  CONCEPT_LEVELS,
+  ACTIVATION_MIN,
+  ACTIVATION_MAX,
+  LEVEL_TRANSITION_WEIGHTS,
+  HOP_DECAY_FACTOR,
+  getLevelTransitionWeight,
+} from './concept-node.js'
 export {
   ConflictResolver,
   CONFLICT_TYPES,
