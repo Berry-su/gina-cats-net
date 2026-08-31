@@ -55,6 +55,29 @@ export const ACTIVATION_MAX = 1
 /** 激活历史的默认最大长度（防止无限增长）。 */
 export const HISTORY_MAX_LENGTH = 100
 
+// ---------------------------------------------------------------------------
+// 时序激活（C-1.2 阶段 2）—— 衰减率按 level 分类型
+// ---------------------------------------------------------------------------
+
+/**
+ * 各 level 的默认时序衰减率（按小时，指数衰减）。
+ *
+ * 衰减公式：A(t) = A(t0) × exp(-λ × Δt_hours)
+ *   - episodic: 0.1 / h   → 24h 后 ≈ 0.09（短期记忆快速遗忘）
+ *   - semantic: 0.01 / h  → 3 天后 ≈ 0.5（中等衰减）
+ *   - abstract: 0.001 / h → 几乎永久（1 年衰减不到一半）
+ *
+ * 构造 ConceptNode 时若不显式传 activationDecayRate，按 level 自动选。
+ */
+export const LEVEL_DECAY_RATES = Object.freeze({
+  episodic: 0.1,
+  semantic: 0.01,
+  abstract: 0.001,
+})
+
+/** 时序衰减模型（预留扩展位）。 */
+export const ACTIVATION_DECAY_MODELS = Object.freeze(['exponential'])
+
 /**
  * 将数值裁剪到 [min, max] 区间。
  * @param {number} value
@@ -107,6 +130,9 @@ export class ConceptNode {
    * @param {number} [options.activation] 初始激活值 [0,1]
    * @param {number} [options.confidence] 初始置信度/证据强度 [0,1]
    * @param {number} [options.granularity] 概念粒度（越大越抽象）
+   * @param {number} [options.lastActivatedAt] 最近一次激活时间戳（ms），默认 Date.now()
+   * @param {number} [options.activationDecayRate] 时序衰减率（按小时），默认按 level 自动选
+   * @param {string} [options.activationDecayModel] 衰减模型，默认 'exponential'
    */
   constructor({
     id,
@@ -117,6 +143,9 @@ export class ConceptNode {
     activation = 0,
     confidence = 1,
     granularity = 1,
+    lastActivatedAt,
+    activationDecayRate,
+    activationDecayModel = 'exponential',
   } = {}) {
     if (typeof id !== 'string' || id.length === 0) {
       throw new TypeError('ConceptNode 需要非空字符串 id')
@@ -136,6 +165,15 @@ export class ConceptNode {
     this.activation = clamp(activation, ACTIVATION_MIN, ACTIVATION_MAX)
     this.confidence = clamp(confidence, 0, 1)
     this.granularity = typeof granularity === 'number' ? granularity : 1
+
+    // C-1.2 时序激活字段
+    this.lastActivatedAt = typeof lastActivatedAt === 'number' ? lastActivatedAt : Date.now()
+    this.activationDecayRate = typeof activationDecayRate === 'number'
+      ? activationDecayRate
+      : LEVEL_DECAY_RATES[level]
+    this.activationDecayModel = ACTIVATION_DECAY_MODELS.includes(activationDecayModel)
+      ? activationDecayModel
+      : 'exponential'
 
     /** @type {Map<string, {weight:number, type:string, bidirectional:boolean}>} */
     this.connections = new Map()
@@ -158,6 +196,7 @@ export class ConceptNode {
       throw new TypeError('activate 需要数值型 amount')
     }
     this.activation = clamp(this.activation + amount, ACTIVATION_MIN, ACTIVATION_MAX)
+    this.lastActivatedAt = Date.now()
     this._record({ op: 'activate', amount, sourceId, activation: this.activation })
     return this.activation
   }
@@ -173,6 +212,7 @@ export class ConceptNode {
       throw new TypeError('deactivate 需要数值型 amount')
     }
     this.activation = clamp(this.activation - amount, ACTIVATION_MIN, ACTIVATION_MAX)
+    this.lastActivatedAt = Date.now()
     this._record({ op: 'deactivate', amount, sourceId, activation: this.activation })
     return this.activation
   }
@@ -187,8 +227,50 @@ export class ConceptNode {
     this.activation = clamp(this.activation * (1 - r), ACTIVATION_MIN, ACTIVATION_MAX)
     // 置信度只做轻微衰减，避免证据被完全抹除
     this.confidence = clamp(this.confidence * (1 - r * 0.5), 0, 1)
+    this.lastActivatedAt = Date.now()
     this._record({ op: 'decay', rate: r, activation: this.activation, confidence: this.confidence })
     return { activation: this.activation, confidence: this.confidence }
+  }
+
+  // ---------------------------------------------------------------------------
+  // 时序激活（C-1.2 阶段 2）—— 指数衰减 + 时间点查询
+  // ---------------------------------------------------------------------------
+
+  /**
+   * 按时间点查询激活值（**纯查询，不改 this.activation**）。
+   *
+   * 公式（指数衰减）：
+   *   A(t) = this.activation × exp(-activationDecayRate × Δt_hours)
+   *   Δt_hours = max(0, (t - this.lastActivatedAt)) / 3600000
+   *
+   * @param {number} t  时间戳（ms），建议 Date.now() 风格
+   * @returns {number} 该时刻的激活值 [0,1]
+   */
+  getActivationAt(t) {
+    if (typeof t !== 'number' || Number.isNaN(t)) {
+      throw new TypeError('getActivationAt 需要数值型时间戳 t')
+    }
+    const deltaMs = Math.max(0, t - this.lastActivatedAt)
+    const deltaHours = deltaMs / 3600000
+    const decayed = this.activation * Math.exp(-this.activationDecayRate * deltaHours)
+    return clamp(decayed, ACTIVATION_MIN, ACTIVATION_MAX)
+  }
+
+  /**
+   * 应用时序衰减到当前（**实际改 this.activation**，推进 lastActivatedAt）。
+   *
+   * 等价于：在时刻 now 查询 getActivationAt(now)，把结果写回 this.activation。
+   * 适合 tick 循环 / 持久化前批量衰减。
+   *
+   * @param {number} [now=Date.now()]
+   * @returns {number} 衰减后激活值
+   */
+  applyTimeDecay(now = Date.now()) {
+    const decayed = this.getActivationAt(now)
+    this.activation = decayed
+    this.lastActivatedAt = now
+    this._record({ op: 'applyTimeDecay', activation: this.activation, now })
+    return this.activation
   }
 
   /**
@@ -575,6 +657,10 @@ export class ConceptNode {
       activation: this.activation,
       confidence: this.confidence,
       granularity: this.granularity,
+      // C-1.2 时序激活字段
+      lastActivatedAt: this.lastActivatedAt,
+      activationDecayRate: this.activationDecayRate,
+      activationDecayModel: this.activationDecayModel,
       connections: this.getConnections(),
       history: this.history.map((h) => ({ ...h })),
     }
@@ -582,12 +668,23 @@ export class ConceptNode {
 
   /**
    * 从普通对象恢复为 ConceptNode 实例。
-   * 向后兼容：旧数据无 level 字段时回退到 'semantic'。
+   * 向后兼容：
+   *   - 旧数据无 level 字段时回退到 'semantic'
+   *   - 旧数据无 lastActivatedAt 时从 history[0].ts 推断（无 history 则用 Date.now()）
+   *   - 旧数据无 activationDecayRate 时按 level 自动选（构造器逻辑）
    * @param {object} data
    * @returns {ConceptNode}
    */
   static fromJSON(data) {
     if (!data || typeof data !== 'object') throw new TypeError('fromJSON 需要对象')
+    // 推断 lastActivatedAt：优先 data.lastActivatedAt，否则 history[0].ts，否则 Date.now()
+    let inferredLastActivatedAt = data.lastActivatedAt
+    if (typeof inferredLastActivatedAt !== 'number' && Array.isArray(data.history) && data.history.length > 0) {
+      inferredLastActivatedAt = data.history[0].ts
+    }
+    if (typeof inferredLastActivatedAt !== 'number') {
+      inferredLastActivatedAt = Date.now()
+    }
     const node = new ConceptNode({
       id: data.id,
       name: data.name,
@@ -597,6 +694,9 @@ export class ConceptNode {
       activation: data.activation,
       confidence: data.confidence,
       granularity: data.granularity,
+      lastActivatedAt: inferredLastActivatedAt,
+      activationDecayRate: data.activationDecayRate,
+      activationDecayModel: data.activationDecayModel,
     })
     if (Array.isArray(data.connections)) {
       for (const c of data.connections) {

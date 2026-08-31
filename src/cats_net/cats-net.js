@@ -285,6 +285,66 @@ export class CatsNet {
   }
 
   // ---------------------------------------------------------------------------
+  // 时序激活（C-1.2 阶段 2）—— 全图批量衰减 + 时间窗查询
+  // ---------------------------------------------------------------------------
+
+  /**
+   * 全图批量时序衰减（公开 API）。
+   *
+   * 对所有节点调 applyTimeDecay(now)，推进 lastActivatedAt 到 now，
+   * 把 getActivationAt(now) 写回 activation。
+   *
+   * 适合：tick 循环 / 持久化前 / 长时间未活动后唤醒。
+   *
+   * @param {number} [now=Date.now()]
+   * @returns {{decayed: number, stable: number}} 衰减节点数 + 稳定节点数
+   */
+  tickTimeDecay(now = Date.now()) {
+    this._guard()
+    let decayed = 0
+    let stable = 0
+    for (const node of this.nodes.values()) {
+      const before = node.activation
+      node.applyTimeDecay(now)
+      // activation 变化 < 1e-9 视为稳定
+      if (Math.abs(before - node.activation) < 1e-9) stable += 1
+      else decayed += 1
+    }
+    return { decayed, stable }
+  }
+
+  /**
+   * 时间窗激活查询（公开 API）。
+   *
+   * 从节点 history[] 筛 [fromT, toT] 区间的所有 op 条目，按时间戳升序返回。
+   * 不做衰减计算（history[] 存的是原始快照，不衰减）。
+   *
+   * @param {string} id
+   * @param {number} fromT 时间戳起点（ms）
+   * @param {number} toT 时间戳终点（ms）
+   * @returns {Array<{ts:number, op:string, activation?:number, sourceId?:string}>}
+   */
+  getActivationHistory(id, fromT, toT) {
+    if (typeof fromT !== 'number' || !Number.isFinite(fromT)
+        || typeof toT !== 'number' || !Number.isFinite(toT)) {
+      throw new TypeError('getActivationHistory 需要有限数值型 fromT/toT')
+    }
+    const node = this.nodes.get(id)
+    if (!node) return []
+    const lo = Math.min(fromT, toT)
+    const hi = Math.max(fromT, toT)
+    return node.history
+      .filter((h) => typeof h.ts === 'number' && h.ts >= lo && h.ts <= hi)
+      .sort((a, b) => a.ts - b.ts)
+      .map((h) => ({
+        ts: h.ts,
+        op: h.op,
+        activation: h.activation,
+        sourceId: h.sourceId,
+      }))
+  }
+
+  // ---------------------------------------------------------------------------
   // 冲突消解 / 记忆投影
   // ---------------------------------------------------------------------------
 

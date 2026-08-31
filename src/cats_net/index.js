@@ -11,8 +11,11 @@ export {
   CONCEPT_LEVELS,
   ACTIVATION_MIN,
   ACTIVATION_MAX,
+  ACTIVATION_DECAY_MODELS,
+  LEVEL_DECAY_RATES,
   LEVEL_TRANSITION_WEIGHTS,
   HOP_DECAY_FACTOR,
+  HISTORY_MAX_LENGTH,
   getLevelTransitionWeight,
 } from './concept-node.js'
 export {
