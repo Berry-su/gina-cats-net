@@ -22,6 +22,10 @@ function clamp(value, min, max) {
 
 /**
  * 单条记忆痕迹。
+ *
+ * v0.5.1（C-1.4 patch · R5）：新增 `mergedFrom` 字段，记录 mergeConcepts 重定向
+ * memory.concepts[] 时被合并掉的旧 id。仅在去重实际触发时追加（避免噪音），
+ * 只增不删，可追溯。
  */
 export class MemoryEntry {
   /**
@@ -33,6 +37,8 @@ export class MemoryEntry {
    * @param {object} [options.activationPattern] 概念 id -> 激活权重 的投影模式
    * @param {number} [options.strength]     记忆强度 [0,1]
    * @param {number} [options.timestamp]    形成时间戳
+   * @param {Array<{from:string, at:number, via:string}>} [options.mergedFrom]
+   *        mergeConcepts 重定向时被合并的旧 id 记录（v0.5.1+；旧快照无该字段视为 []）
    */
   constructor({
     id,
@@ -42,6 +48,7 @@ export class MemoryEntry {
     activationPattern = {},
     strength = 1,
     timestamp = Date.now(),
+    mergedFrom = [],
   } = {}) {
     if (typeof id !== 'string' || id.length === 0) {
       throw new TypeError('MemoryEntry 需要非空字符串 id')
@@ -53,6 +60,8 @@ export class MemoryEntry {
     this.activationPattern = activationPattern && typeof activationPattern === 'object' ? activationPattern : {}
     this.strength = clamp(strength, STRENGTH_MIN, STRENGTH_MAX)
     this.timestamp = typeof timestamp === 'number' ? timestamp : Date.now()
+    // v0.5.1：mergedFrom 字段（向后兼容：旧数据无该字段 → []）
+    this.mergedFrom = Array.isArray(mergedFrom) ? mergedFrom : []
   }
 
   /** 记忆强度调整。 */
@@ -66,6 +75,18 @@ export class MemoryEntry {
     return this.strength
   }
 
+  /**
+   * 记录一次合并来源（v0.5.1+ · R5）。
+   * 仅由 _redirectMemories 内部调用；外部不应直接调。
+   * @param {string} fromId 被合并掉的旧 id
+   * @param {string} via 触发方式（固定 'mergeConcepts'）
+   * @param {number} at 时间戳（ms）
+   */
+  recordMergedFrom(fromId, via, at = Date.now()) {
+    if (typeof fromId !== 'string' || fromId.length === 0) return
+    this.mergedFrom.push({ from: fromId, at, via: typeof via === 'string' ? via : 'mergeConcepts' })
+  }
+
   toJSON() {
     return {
       id: this.id,
@@ -75,6 +96,8 @@ export class MemoryEntry {
       activationPattern: { ...this.activationPattern },
       strength: this.strength,
       timestamp: this.timestamp,
+      // v0.5.1：mergedFrom 字段持久化（向后兼容：旧快照无该字段 → fromJSON 视为 []）
+      mergedFrom: this.mergedFrom.map((m) => ({ ...m })),
     }
   }
 
@@ -87,6 +110,8 @@ export class MemoryEntry {
       activationPattern: data.activationPattern,
       strength: data.strength,
       timestamp: data.timestamp,
+      // v0.5.1：旧快照无 mergedFrom 字段时视为 []（向后兼容）
+      mergedFrom: Array.isArray(data.mergedFrom) ? data.mergedFrom : [],
     })
   }
 }

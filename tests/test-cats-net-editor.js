@@ -192,9 +192,21 @@ describe('CatsNet.mergeConcepts —— 多合 1', () => {
     const mem = cn.projection.get('m1')
     assert.ok(mem, 'memory m1 存在')
     assert.ok(!mem.concepts.includes('c'), 'memory 中 c 已重定向')
-    // 注：_redirectMemories 是原地替换不 dedupe，所以 a 出现 3 次（a→a, b→a, c→a）
-    //   行为与 C-1.3 一致（学习阶段不引入去重开销）
-    assert.equal(mem.concepts.filter((x) => x === 'a').length, 3, 'memory 中 a 出现 3 次（a 自身 + b→a + c→a）')
+    // v0.5.1 R5（拍板 b）：_redirectMemories 现在做 Set dedupe
+    //   原 C-1.3 行为：a 出现 3 次（a→a, b→a, c→a）—— 冲突"完整版=上线产品"硬约束
+    //   现 v0.5.1 行为：dedupe 后 a 只出现 1 次，b/c 写入 mergedFrom
+    assert.equal(mem.concepts.filter((x) => x === 'a').length, 1, 'v0.5.1 dedupe：a 只出现 1 次')
+    assert.equal(mem.concepts.length, 1, 'mem.concepts 长度 = 1')
+    // mergedFrom 记录 b 和 c 两个来源（按合并顺序追加）
+    assert.ok(Array.isArray(mem.mergedFrom), 'mergedFrom 是数组')
+    const sources = mem.mergedFrom.map((m) => m.from).sort()
+    assert.deepEqual(sources, ['b', 'c'], 'mergedFrom 含 b + c 两个来源')
+    // 每条 mergedFrom entry 都有 from / at / via
+    for (const entry of mem.mergedFrom) {
+      assert.equal(typeof entry.from, 'string', 'entry.from 是字符串')
+      assert.equal(typeof entry.at, 'number', 'entry.at 是数字')
+      assert.equal(entry.via, 'mergeConcepts', 'entry.via = "mergeConcepts"')
+    }
   })
 
   test('mergeConcepts 用 newId 指定新 keeper', () => {
@@ -246,6 +258,48 @@ describe('CatsNet.mergeConcepts —— 多合 1', () => {
 
     const r = cn.mergeConcepts(['a', 'b'], 'merged', { only: 'forced' })
     assert.deepEqual(r.merged.attributes, { only: 'forced' }, 'attributes 整体替换')
+  })
+
+  // v0.5.1 R5（ADR-002 §3.4.7 Blocker 2 · 拍板 b）：
+  //   mergeConcepts 后 memory.concepts[] 必须 dedupe（Set 去重），
+  //   并把被合并的旧 id 追加到 mem.mergedFrom 记录可追溯。
+  test('v0.5.1 R5：3 节点合并后 memory.concepts 去重 + mergedFrom 记录 2 个来源', () => {
+    withMockTime(() => {
+      const cn = new CatsNet()
+      // 3 节点 a/b/c，mergeConcepts([a,b,c]) → keeper = a
+      cn.addNode({ id: 'a', type: 'entity', attributes: { name: 'risk' }, confidence: 0.7 })
+      cn.addNode({ id: 'b', type: 'entity', attributes: { name: 'risk' }, confidence: 0.6 })
+      cn.addNode({ id: 'c', type: 'entity', attributes: { name: 'risk' }, confidence: 0.5 })
+      // 投影一条 memory 同时含 a/b/c 三个概念
+      cn.projectMemory({ id: 'mem_abc', concepts: ['a', 'b', 'c'], strength: 0.9 })
+      // 再加一条 memory 仅含 a（无重复，mergedFrom 不应追加）
+      cn.projectMemory({ id: 'mem_a_only', concepts: ['a'], strength: 0.9 })
+
+      const r = cn.mergeConcepts(['a', 'b', 'c'])
+      assert.ok(r, 'mergeConcepts 成功')
+      assert.equal(r.merged.id, 'a', 'keeper = a')
+
+      // 1) mem_abc 合并后 a 只出现 1 次（去重），b/c 写入 mergedFrom
+      const memAbc = cn.projection.get('mem_abc')
+      assert.ok(memAbc, 'mem_abc 存在')
+      assert.equal(memAbc.concepts.length, 1, 'dedupe 后 mem_abc.concepts 长度 = 1')
+      assert.deepEqual(memAbc.concepts, ['a'], 'dedupe 后 mem_abc.concepts = [a]')
+      assert.ok(Array.isArray(memAbc.mergedFrom), 'mem_abc.mergedFrom 是数组')
+      const sources = memAbc.mergedFrom.map((m) => m.from).sort()
+      assert.deepEqual(sources, ['b', 'c'], 'mergedFrom 含 b + c 两个来源')
+      // 每条 entry 都有 from / at / via
+      for (const entry of memAbc.mergedFrom) {
+        assert.equal(typeof entry.from, 'string', 'entry.from 是 string')
+        assert.equal(typeof entry.at, 'number', 'entry.at 是 number')
+        assert.equal(entry.via, 'mergeConcepts', 'entry.via = "mergeConcepts"')
+      }
+
+      // 2) mem_a_only 原本就没重复，mergedFrom 应为空（避免噪音）
+      const memAOnly = cn.projection.get('mem_a_only')
+      assert.ok(memAOnly, 'mem_a_only 存在')
+      assert.deepEqual(memAOnly.concepts, ['a'], 'mem_a_only.concepts 不变')
+      assert.equal(memAOnly.mergedFrom.length, 0, '无重复时 mergedFrom 不追加')
+    })
   })
 })
 

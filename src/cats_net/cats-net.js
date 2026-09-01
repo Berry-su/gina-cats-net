@@ -447,8 +447,9 @@ export class CatsNet {
    *        - 双方都已存在 + similarity >= 0.6 → 合并（mergeConcepts 内部动作）
    *        - 仅一方存在 + Laplace 平滑后的 confidence >= minConfidence → 归纳另一方
    *        - 双方都不存在 + 同上 + 容量允许 → 归纳两个新概念
-   *   5) 降权冷概念：90 天没激活且 activation < 0.3 的节点 → confidence *= 0.5
-   *   6) 返回：{ added: ConceptNode[], merged: {from,to,similarity}[], demoted: {id, beforeConfidence, afterConfidence}[] }
+   *   5) 降权冷概念：90 天没激活且 activation < 0.3 的节点 → salience *= 0.5
+   *      （v0.5.1 R6：从 confidence 迁 salience 字段；详见 §3.4.7 Blocker 3 拍板 a）
+   *   6) 返回：{ added: ConceptNode[], merged: {from,to,similarity}[], demoted: {id, beforeSalience, afterSalience}[] }
    *
    * 4 重护栏（防概念爆炸）：
    *   1) LRU 10k 上限：CooccurrenceTracker.maxPairs（构造时或 options.cooccurrenceOptions 配）
@@ -464,7 +465,7 @@ export class CatsNet {
    * @param {number} [options.now=Date.now()]    衰减参照时间（便于测试用 withMockTime）
    * @param {number} [options.coldDays=90]       冷概念天数阈值
    * @param {number} [options.mergeSimilarity=0.6] 合并相似度门槛
-   * @returns {{ added: ConceptNode[], merged: {from:string, to:string, similarity:number}[], demoted: {id:string, beforeConfidence:number, afterConfidence:number}[], recordedPairs: number }}
+   * @returns {{ added: ConceptNode[], merged: {from:string, to:string, similarity:number}[], demoted: {id:string, beforeSalience:number, afterSalience:number}[], recordedPairs: number }}
    */
   learnConcepts({
     episodes,
@@ -588,6 +589,9 @@ export class CatsNet {
     }
 
     // 5) 降权冷概念（90 天没激活 + activation < 0.3）
+    //    v0.5.1 R6（ADR-002 §3.4.7 Blocker 3 · 拍板 a）：
+    //      冷降权从 confidence 字段迁到 salience 字段（与 demote/boost 同一机制，
+    //      符合 §3.4.2 原则"demote/boost 只改 salience 不改 confidence"）
     const coldThresholdMs = coldDays * 24 * 3600 * 1000
     for (const node of this.nodes.values()) {
       // C-1.4：软删除节点不参与降权
@@ -595,12 +599,14 @@ export class CatsNet {
       const last = typeof node.lastActivatedAt === 'number' ? node.lastActivatedAt : tNow
       const age = tNow - last
       if (age > coldThresholdMs && node.activation < 0.3) {
-        const before = node.confidence
+        // 改 salience 而非 confidence（统一降权机制，salience 默认 = confidence，行为一致）
+        const before = node.salience
         const after = Math.max(0, before * LEARN_DEMOTE_FACTOR)
-        node.confidence = after
-        // 同步到 _record 让 history 留痕（C-1.4 会迁移到 salience 字段）
+        node.salience = after
+        // 同步到 _record 让 history 留痕
         node._record?.({ op: 'learnDemote', before, after, reason: 'cold' })
-        result.demoted.push({ id: node.id, beforeConfidence: before, afterConfidence: after })
+        // v0.5.1 R6：字段名从 beforeConfidence/afterConfidence 迁 beforeSalience/afterSalience
+        result.demoted.push({ id: node.id, beforeSalience: before, afterSalience: after })
       }
     }
 
@@ -694,9 +700,15 @@ export class CatsNet {
 
   /**
    * 把 projection memory 中所有 fromId 引用重定向到 toId。
+   *
+   * v0.5.1（C-1.4 patch · R5 · 拍板 b）：
+   *   - 去重：mem.concepts 原地替换后用 Set 重组（避免合并 3 个节点时 keeper 出现 3 次）
+   *   - 追溯：仅当去重实际触发了重复元素被丢弃时，把 fromId 追加到 mem.mergedFrom
+   *     （避免每个 memory 都加无意义 mergedFrom 噪音；只增不删，可追溯）
+   *
    * @param {string} fromId
    * @param {string} toId
-   * @returns {number} 重定向的记忆数
+   * @returns {number} 重定向的记忆数（含 dedupe 触发的去重次数）
    */
   _redirectMemories(fromId, toId) {
     if (fromId === toId) return 0
@@ -709,6 +721,15 @@ export class CatsNet {
       if (mem.activationPattern && Object.prototype.hasOwnProperty.call(mem.activationPattern, fromId)) {
         mem.activationPattern[toId] = mem.activationPattern[fromId]
         delete mem.activationPattern[fromId]
+      }
+      // v0.5.1 R5：dedupe 触发时去重（Set 重组） + 仅触发去重才追加 mergedFrom
+      const beforeLen = mem.concepts.length
+      const deduped = Array.from(new Set(mem.concepts))
+      const dedupedCount = beforeLen - deduped.length
+      if (dedupedCount > 0) {
+        mem.concepts = deduped
+        // 只在本次去重实际丢东西时才记录 mergedFrom（避免噪音）
+        mem.recordMergedFrom?.(fromId, 'mergeConcepts')
       }
       redirected += 1
     }

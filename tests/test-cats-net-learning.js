@@ -19,7 +19,7 @@
  *     12) maxNew=10 限制新增数
  *     13) minConfidence=0.7 过滤低置信（count<5 不入选）
  *     14) LRU 10k cap 不爆（100k 随机 episode 跑完 size ≤ 10000）
- *     15) 90 天没激活 → demoted.length >= 1（confidence × 0.5）
+ *     15) 90 天没激活 → demoted.length >= 1（v0.5.1 R6：salience × 0.5，原 confidence × 0.5 已迁 salience 字段）
  *     16) 无 episodes → 从 projection.getMemories() 拉
  *     17) 合并后连接重定向（指向 removee 的连接 → keeper）
  *     18) 合并后 projection memory.concepts[] id 重定向
@@ -588,7 +588,7 @@ describe('CatsNet.learnConcepts —— 4 重护栏', () => {
 // ----------------------------------------------------------------------------
 
 describe('CatsNet.learnConcepts —— 冷概念降权', () => {
-  test('100 天前 lastActivatedAt 的节点被降权（confidence × 0.5）', () => {
+  test('100 天前 lastActivatedAt 的节点被降权（v0.5.1 R6：salience × 0.5）', () => {
     withMockTime(() => {
       const cn = new CatsNet()
       const old = cn.addNode({
@@ -598,13 +598,17 @@ describe('CatsNet.learnConcepts —— 冷概念降权', () => {
         activation: 0.1, // < 0.3 阈值
         lastActivatedAt: mockNow - 100 * DAY_MS, // 100 天前
       })
-      const before = old.confidence
+      // v0.5.1 R6：默认 salience = confidence（构造器逻辑），所以初始 salience = 0.8
+      const before = old.salience
       const result = cn.learnConcepts({ now: mockNow, episodes: [] })
       assert.ok(result.demoted.length >= 1, '至少 1 个 demoted')
       const entry = result.demoted.find((d) => d.id === 'cold_node')
       assert.ok(entry, 'cold_node 在 demoted 列表')
-      assert.equal(entry.beforeConfidence, before)
-      near(entry.afterConfidence, before * 0.5, '降权后 confidence')
+      // v0.5.1 R6：字段名从 beforeConfidence/afterConfidence 迁 beforeSalience/afterSalience
+      assert.equal(entry.beforeSalience, before, 'beforeSalience = 0.8（默认 = confidence）')
+      near(entry.afterSalience, before * 0.5, '降权后 salience = 0.4')
+      // confidence 不再被改动（统一降权机制走 salience，confidence 保持证据强度）
+      assert.equal(old.confidence, 0.8, 'confidence 不被 learnConcepts 冷降权改动')
     })
   })
 
@@ -650,8 +654,14 @@ describe('CatsNet.learnConcepts —— 冷概念降权', () => {
         activation: 0.1,
         lastActivatedAt: mockNow - 60 * DAY_MS,
       })
+      // v0.5.1 R6：默认 salience = confidence = 0.6
+      const before = node.salience
       const result = cn.learnConcepts({ now: mockNow, episodes: [], coldDays: 50 })
-      assert.ok(result.demoted.some((d) => d.id === 'semi_cold'), 'coldDays=50 时 60 天前节点降权')
+      const entry = result.demoted.find((d) => d.id === 'semi_cold')
+      assert.ok(entry, 'coldDays=50 时 60 天前节点降权')
+      // v0.5.1 R6：验证 salience 字段被减半（统一降权机制）
+      assert.equal(entry.beforeSalience, before, 'beforeSalience = 0.6')
+      near(entry.afterSalience, before * 0.5, 'afterSalience = 0.3')
     })
   })
 })
