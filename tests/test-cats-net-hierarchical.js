@@ -2,12 +2,18 @@
  * CatsNet.activateHierarchical / spreadActivation 跨层权重收口（C-1.1）—— 集成测试
  *
  * 覆盖（ADR-002 §3.1.5）：
- *   1) 跨层权重生效：episodic(1.0) → semantic = 0.45，semantic(0.45) → abstract = 0.12
- *   2) 同层 1.0 权重传播不退化：semantic → semantic 应保持 0.9
+ *   1) 跨层权重生效：episodic(1.0) → semantic = 0.54（v0.6 salience=1.0 乘子 1.2），
+ *      semantic(0.54) → abstract = 0.17496（每跳各 × 1.2）
+ *   2) 同层 1.0 权重传播不退化：semantic → semantic 应保持 0.9 × 1.2 = 1.08 → clamp 到 1.0
  *   3) 深度超限终止：maxDepth=2 时 3 层链式扩散应停在第 2 层
  *   4) getLevelActivationSummary 按层统计
  *   5) levels 选项限定：exclude semantic 时不跨入 semantic
  *   6) 不存在的 rootId：安全返回空结果
+ *
+ * v0.6 算例更新（ADR-006 §4.3）：默认 salience=confidence=1.0，乘子=1 + (1.0-0.5)×0.4 = 1.2
+ *   - 0.45 → 0.54
+ *   - 0.1215 → 0.17496
+ *   - 0.9 → 1.0（clamp）
  *
  * 运行：node --test tests/test-cats-net-hierarchical.js
  */
@@ -29,7 +35,7 @@ const near = (a, b, msg) => {
 
 // ---------------------------------------------------------------------------
 describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
-  test('跨层权重生效：episodic(1.0) → semantic = 0.45，再 → abstract ≈ 0.1215', () => {
+  test('跨层权重生效：episodic(1.0) → semantic = 0.54，再 → abstract ≈ 0.17496（v0.6 salience × 1.2）', () => {
     const cn = new CatsNet()
     const episodic = cn.addNode({ id: 'evt_1', name: '昨日跌停', level: 'episodic' })
     const semantic = cn.addNode({ id: 'vol', name: '波动', level: 'semantic' })
@@ -39,10 +45,14 @@ describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
 
     const result = cn.activateHierarchical('evt_1', { seedAmount: 1.0 })
 
-    // 算例：episodic(1.0) × weight 1.0 × transition 0.5 × HOP 0.9 = 0.45
-    near(semantic.activation, 0.45, 'semantic 激活值')
-    // 算例：semantic(0.45) × weight 1.0 × transition 0.3 × HOP 0.9 = 0.1215
-    near(abstract.activation, EPISODIC_TO_SEMANTIC * HOP_DECAY_FACTOR * SEMANTIC_TO_ABSTRACT * HOP_DECAY_FACTOR, 'abstract 激活值')
+    // v0.6 算例：episodic(1.0) × weight 1.0 × transition 0.5 × HOP 0.9 × salienceBoost 1.2 = 0.54
+    near(semantic.activation, 0.54, 'semantic 激活值（v0.6 salience × 1.2）')
+    // v0.6 算例：semantic(0.54) × weight 1.0 × transition 0.3 × HOP 0.9 × salienceBoost 1.2 = 0.17496
+    near(
+      abstract.activation,
+      EPISODIC_TO_SEMANTIC * HOP_DECAY_FACTOR * SEMANTIC_TO_ABSTRACT * HOP_DECAY_FACTOR * 1.2 * 1.2,
+      'abstract 激活值（v0.6 每跳各 × 1.2）',
+    )
 
     // layers 分组正确
     assert.deepEqual(result.layers.episodic.sort(), ['evt_1'])
@@ -59,7 +69,7 @@ describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
     assert.deepEqual(rootTrace.hopPath, ['evt_1'])
   })
 
-  test('同层 1.0 权重传播：semantic → semantic 保持 × HOP_DECAY_FACTOR', () => {
+  test('同层 1.0 权重传播：semantic → semantic = 1.0（v0.6 × 1.2 → clamp 上限）', () => {
     const cn = new CatsNet()
     const a = cn.addNode({ id: 'a', level: 'semantic' })
     const b = cn.addNode({ id: 'b', level: 'semantic' })
@@ -67,11 +77,12 @@ describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
 
     cn.activateHierarchical('a', { seedAmount: 1.0, maxDepth: 1 })
 
-    // 算例：semantic(1.0) × weight 1.0 × transition 1.0 × HOP 0.9 = 0.9
-    near(b.activation, SEMANTIC_TO_SEMANTIC * HOP_DECAY_FACTOR, 'semantic → semantic 激活值')
+    // v0.6 算例：semantic(1.0) × weight 1.0 × transition 1.0 × HOP 0.9 × salienceBoost 1.2 = 1.08
+    //   → target.activate() clamp 到 [0,1] → 终值 1.0
+    near(b.activation, 1.0, 'semantic → semantic 激活值（v0.6 clamp 上限）')
   })
 
-  test('深度超限终止：maxDepth=2 时 3 层链式扩散停在第 2 层', () => {
+  test('深度超限终止：maxDepth=2 时 3 层链式扩散停在第 2 层（v0.6 算例）', () => {
     const cn = new CatsNet()
     const e = cn.addNode({ id: 'e', level: 'episodic' })
     const s = cn.addNode({ id: 's', level: 'semantic' })
@@ -81,7 +92,7 @@ describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
 
     // maxDepth=1 只允许一层扩散（root 自身 + 1 跳），s 应激活，a 不应激活
     const r1 = cn.activateHierarchical('e', { seedAmount: 1.0, maxDepth: 1 })
-    near(s.activation, 0.45, 'maxDepth=1 时 s 仍激活')
+    near(s.activation, 0.54, 'maxDepth=1 时 s 仍激活（v0.6 × 1.2）')
     assert.equal(a.activation, 0, 'maxDepth=1 时 a 不应激活')
     assert.equal(r1.activated.length, 2, 'maxDepth=1 激活 2 节点')
 
@@ -96,8 +107,8 @@ describe('CatsNet.activateHierarchical —— C-1.1 跨层激活扩散', () => {
     e2.connect(s2.id, 1.0, 'causal')
     s2.connect(a2.id, 1.0, 'causal')
     cn.activateHierarchical('e2', { seedAmount: 1.0, maxDepth: 2 })
-    near(s2.activation, 0.45, 'maxDepth=2 时 s2 仍激活')
-    near(a2.activation, 0.1215, 'maxDepth=2 时 a2 应激活')
+    near(s2.activation, 0.54, 'maxDepth=2 时 s2 仍激活（v0.6 × 1.2）')
+    near(a2.activation, 0.17496, 'maxDepth=2 时 a2 应激活（v0.6 每跳各 × 1.2）')
   })
 
   test('levels 选项限定：仅 episodic + abstract 时不跨入 semantic', () => {

@@ -4,7 +4,7 @@
  * 供上层业务模块（记忆系统、状态机、MCP、交易、SOS 等后续模块）引用。
  */
 
-export { CatsNet } from './cats-net.js'
+export { CatsNet, SALIENCE_FACTOR } from './cats-net.js'
 export {
   ConceptNode,
   CONCEPT_TYPES,

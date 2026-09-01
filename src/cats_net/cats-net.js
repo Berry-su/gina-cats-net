@@ -45,6 +45,37 @@ const LEARN_MERGE_SIMILARITY = 0.6
 /** 概念自学习（C-1.3）—— Laplace 平滑常数（影响"新概念入选 confidence"门槛）。 */
 const LEARN_LAPLACE_K = 2
 
+/**
+ * v0.6 · 重要性传染不对称（ADR-006 §3.1）—— salience 接入 spreadActivation 公式的乘子系数。
+ *
+ * 公式：salienceBoost = 1 + (src.salience - 0.5) × SALIENCE_FACTOR
+ *   - src.salience = 1.0 → 1 + 0.2 = 1.2 (+20%)
+ *   - src.salience = 0.5 → 1 + 0.0 = 1.0 (中性)
+ *   - src.salience = 0.0 → 1 - 0.2 = 0.8 (-20%)
+ *
+ * 调参窗口：[0, 1]
+ *   - 0 = 完全忽略 salience（相当于 v0.5 行为）
+ *   - 0.4 = 默认（保守起步，v0.6 落地值）
+ *   - 1.0 = 激进（重要源 ±50%）
+ *
+ * v0.7 视情调整（依据 getActivationHistory 真实数据）。
+ *
+ * @type {number}
+ */
+export const SALIENCE_FACTOR = 0.4
+
+/**
+ * v0.6 · 重要性传染不对称乘子（ADR-006 §3.1）。
+ *
+ * 只看 src.salience（不看 target.salience）—— 体现"重要源影响大 / 被影响目标独立"的设计直觉。
+ *
+ * @param {ConceptNode} src 源节点
+ * @returns {number} 乘子 ∈ [0.8, 1.2]（当 SALIENCE_FACTOR=0.4 且 src.salience ∈ [0,1]）
+ */
+function salienceAsymmetry(src) {
+  return 1 + (src.salience - 0.5) * SALIENCE_FACTOR
+}
+
 export class CatsNet {
   /**
    * @param {object} [options]
@@ -202,6 +233,10 @@ export class CatsNet {
    * v0.2.0 收口（C-1.1 层次激活扩散）：走 ConceptNode.spreadActivation 跨层权重表 +
    * HOP_DECAY_FACTOR，不再用 this.decayFactor 常数衰减。
    *
+   * v0.6 落地（ADR-006 §3.1 重要性传染不对称）：在主算法层叠加
+   *   salienceBoost = 1 + (src.salience - 0.5) × SALIENCE_FACTOR
+   *   体现"重要源影响大 + 被影响目标独立"的设计直觉（只接 src 侧，不接 target 侧）。
+   *
    * @param {Array<{id:string, amount:number}>|Object<string,number>} seeds 扩散种子
    * @param {object} [options]
    * @param {number} [options.iterations]   最大迭代次数（覆盖构造默认）
@@ -243,13 +278,18 @@ export class CatsNet {
           // C-1.4：扩散目标也是软删除 → 跳过
           if (target.deletedAt != null) continue
           // 跨层激活扩散：从 src 节点查 src.level → target.level 转换权重
-          //   effective = transition(src.level → target.level) × HOP_DECAY_FACTOR × incoming
+          //   baseBoost = transition(src.level → target.level) × HOP_DECAY_FACTOR × incoming
           // 取代 v0.1.0 的 `src.activation * meta.weight * this.decayFactor` 常数衰减
           // ADR-002 §3.1.3 文字笔误修正：原文写 target.spreadActivation，
           //   但 spreadActivation 语义是 this.level → targetLevel，
           //   应以 src 为 this、target.level 为目标层
+          // v0.6（ADR-006 §3.1）：重要性传染不对称——src.salience 乘子叠加到 baseBoost
+          //   salienceBoost = 1 + (src.salience - 0.5) × SALIENCE_FACTOR
+          //   注意：只看 src.salience（不看 target.salience），体现"重要源影响大 / 被影响目标独立"
           const incoming = src.activation * meta.weight
-          const effective = src.spreadActivation(target.level, incoming)
+          const baseBoost = src.spreadActivation(target.level, incoming)
+          const salienceBoost = salienceAsymmetry(src)
+          const effective = baseBoost * salienceBoost
           if (effective < minActivation) continue
           const before = target.activation
           target.activate(effective, src.id)
@@ -270,6 +310,10 @@ export class CatsNet {
    *   - 接受 options.levels 限定参与扩散的层次（默认 3 层全开）
    *   - 接受 options.maxDepth 限制扩散深度（默认 3 = 每层一跳）
    *   - 返回值带每层分组 + 完整 trace（节点级 hopPath），便于 3D 可视化
+   *
+   * v0.6 落地（ADR-006 §3.5）：与 spreadActivation 保持公式一致——叠加
+   *   salienceBoost = 1 + (src.salience - 0.5) × SALIENCE_FACTOR
+   *   保证两条扩散路径行为统一。
    *
    * @param {string} rootId 根概念 id
    * @param {object} [options]
@@ -320,8 +364,12 @@ export class CatsNet {
           // C-1.4：跳过软删除的目标
           if (target.deletedAt != null) continue
           if (!allowedLevels.has(target.level)) continue
+          // v0.6（ADR-006 §3.5）：与 spreadActivation 同步应用重要性传染不对称
+          //   salienceBoost = 1 + (src.salience - 0.5) × SALIENCE_FACTOR
           const incoming = src.activation * meta.weight
-          const effective = src.spreadActivation(target.level, incoming)
+          const baseBoost = src.spreadActivation(target.level, incoming)
+          const salienceBoost = salienceAsymmetry(src)
+          const effective = baseBoost * salienceBoost
           if (effective < minActivation) continue
           target.activate(effective, src.id)
           activated.add(target.id)

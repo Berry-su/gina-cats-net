@@ -646,7 +646,15 @@ export class ConceptNode {
    *   semantic      0.5       1.0       0.3
    *   abstract      0.2       0.3       1.0
    *
-   * 调用方（通常是 CatsNet.spreadActivation）会再叠加连接权重、当前激活值与多跳累乘 HOP_DECAY_FACTOR。
+   * 调用方（通常是 CatsNet.spreadActivation / activateHierarchical）会再叠加：
+   *   1) 连接权重、当前激活值（已在 incomingWeight 中体现）
+   *   2) 多跳累乘 HOP_DECAY_FACTOR
+   *   3) v0.6 重要性传染不对称（ADR-006 §3.4）—— salience 乘子在 cats-net.js 主算法层叠加
+   *
+   * ⚠️ v0.6 节点层职责单一性（ADR-006 §3.4）：
+   *   本方法不感知"重要性传染"语义，只算"跨层 + 单跳"基础权重。
+   *   salience 乘子是网络层语义，由 cats-net.js 的 `salienceAsymmetry(src)` 在外层叠加。
+   *   这样保证节点层 API 纯净，未来其它算法（如矩阵并行）复用本方法时不承担 salience 语义。
    *
    * @param {string} targetLevel     目标节点层次
    * @param {number} [incomingWeight=1.0] 传入权重（典型 = 连接权重 × 源节点当前激活）
