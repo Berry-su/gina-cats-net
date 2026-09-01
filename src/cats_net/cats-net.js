@@ -13,11 +13,28 @@
  *   3) 紧急终止：abort() 设置终止旗标，运行中每步经 _guard() 检查，立即中断。
  */
 
-import { ConceptNode } from './concept-node.js'
+import { ConceptNode, CONCEPT_TYPES, ACTIVATION_DECAY_MODELS } from './concept-node.js'
 import { ConflictResolver } from './conflict-resolver.js'
 import { MemoryProjection } from './memory-projection.js'
 import { Serializer } from './serializer.js'
 import { CooccurrenceTracker } from './cooccurrence.js'
+
+/**
+ * 本地副本：sanitizeAttributes（与 concept-node.js 内部实现一致）
+ * 用于 updateConcept / mergeConcepts 改 attributes 时的过滤。
+ * @param {object} attributes
+ * @returns {object} 过滤后的合法属性对象
+ */
+function sanitizeAttributesLocal(attributes) {
+  const out = {}
+  if (!attributes || typeof attributes !== 'object') return out
+  for (const [key, value] of Object.entries(attributes)) {
+    if (typeof value === 'number' || typeof value === 'string') {
+      out[key] = value
+    }
+  }
+  return out
+}
 
 /** 概念自学习（C-1.3）—— 冷概念降权阈值：90 天没激活。 */
 const LEARN_COLD_DAYS = 90
@@ -79,6 +96,9 @@ export class CatsNet {
 
   /**
    * 获取概念节点。
+   *
+   * C-1.4 行为：仍然返回软删除节点（让上层有机会 `restoreConcept(id)`）；
+   * 配合 `getAliveNodes()` / `isAlive(id)` 区分。
    * @param {string} id
    * @returns {ConceptNode|undefined}
    */
@@ -96,17 +116,59 @@ export class CatsNet {
   }
 
   /**
-   * 移除概念节点（若存在）。
+   * 节点是否存在且**未软删除**。
+   *
+   * C-1.4 新增：供 `mergeConcepts` / `splitConcept` / `updateConcept` / `learnConcepts` 等
+   * "实际操作节点"的 API 在跳过软删除前用。
+   * @param {string} id
+   * @returns {boolean}
+   */
+  isAlive(id) {
+    const n = this.nodes.get(id)
+    return Boolean(n) && n.deletedAt == null
+  }
+
+  /**
+   * 获取"未软删除"的节点 Map（浅拷贝）。
+   *
+   * C-1.4 新增：供 `getLevelActivationSummary` / `getConceptSphereData` /
+   * `spreadActivation` / `learnConcepts` 等迭代式方法使用。
+   * @returns {Map<string, ConceptNode>}
+   */
+  getAliveNodes() {
+    const out = new Map()
+    for (const [id, n] of this.nodes) {
+      if (n.deletedAt == null) out.set(id, n)
+    }
+    return out
+  }
+
+  /**
+   * 移除概念节点（若存在）。同时清掉其他节点对它的连接。
+   *
+   * C-1.4 行为：硬删除（removeNode 仍会移除软删除节点，等于彻底清理）。
    * @param {string} id
    * @returns {boolean}
    */
   removeNode(id) {
-    return this.nodes.delete(id)
+    const existed = this.nodes.delete(id)
+    if (existed) {
+      // 清理其他节点指向被删节点的连接
+      for (const n of this.nodes.values()) n.connections.delete(id)
+    }
+    return existed
   }
 
-  /** 概念节点数量。 */
+  /** 概念节点数量（含软删除）。 */
   get size() {
     return this.nodes.size
+  }
+
+  /** 未软删除节点数量（C-1.4 新增）。 */
+  get aliveSize() {
+    let n = 0
+    for (const node of this.nodes.values()) if (node.deletedAt == null) n++
+    return n
   }
 
   /** 重置为初始状态（清空节点/记忆/共现追踪器并复位终止旗标）。 */
@@ -151,11 +213,11 @@ export class CatsNet {
     const maxIter = iterations ?? this.maxIterations
     const seedList = this._normalizeSeeds(seeds)
 
-    // 1) 激活种子
+    // 1) 激活种子（跳过软删除节点）
     const activated = new Set()
     for (const { id, amount } of seedList) {
       const node = this.nodes.get(id)
-      if (!node) continue
+      if (!node || node.deletedAt != null) continue
       node.activate(amount, 'seed')
       activated.add(id)
     }
@@ -164,8 +226,9 @@ export class CatsNet {
     let iter = 0
     for (iter = 0; iter < maxIter; iter++) {
       this._guard()
+      // C-1.4：扩散源跳过软删除节点
       const sources = Array.from(this.nodes.values()).filter(
-        (n) => n.activation > minActivation && n.connections.size > 0,
+        (n) => n.deletedAt == null && n.activation > minActivation && n.connections.size > 0,
       )
       if (sources.length === 0) break
 
@@ -177,6 +240,8 @@ export class CatsNet {
           }
           const target = this.nodes.get(targetId)
           if (!target) continue
+          // C-1.4：扩散目标也是软删除 → 跳过
+          if (target.deletedAt != null) continue
           // 跨层激活扩散：从 src 节点查 src.level → target.level 转换权重
           //   effective = transition(src.level → target.level) × HOP_DECAY_FACTOR × incoming
           // 取代 v0.1.0 的 `src.activation * meta.weight * this.decayFactor` 常数衰减
@@ -224,7 +289,7 @@ export class CatsNet {
   ) {
     this._guard()
     const root = this.nodes.get(rootId)
-    if (!root) {
+    if (!root || root.deletedAt != null) {
       return { activated: [], layers: { episodic: [], semantic: [], abstract: [] }, trace: [] }
     }
     // 限定参与扩散的层次
@@ -245,11 +310,15 @@ export class CatsNet {
     for (let depth = 1; depth <= maxDepth && frontier.length > 0; depth++) {
       const next = []
       for (const src of frontier) {
+        // C-1.4：跳过软删除的源
+        if (src.deletedAt != null) continue
         if (!allowedLevels.has(src.level)) continue
         for (const [targetId, meta] of src.connections) {
           if (activated.has(targetId)) continue
           const target = this.nodes.get(targetId)
           if (!target) continue
+          // C-1.4：跳过软删除的目标
+          if (target.deletedAt != null) continue
           if (!allowedLevels.has(target.level)) continue
           const incoming = src.activation * meta.weight
           const effective = src.spreadActivation(target.level, incoming)
@@ -287,6 +356,8 @@ export class CatsNet {
       abstract: { count: 0, totalActivation: 0, avgActivation: 0 },
     }
     for (const node of this.nodes.values()) {
+      // C-1.4：软删除节点不计入
+      if (node.deletedAt != null) continue
       const slot = summary[node.level]
       if (!slot) continue
       slot.count += 1
@@ -319,6 +390,8 @@ export class CatsNet {
     let decayed = 0
     let stable = 0
     for (const node of this.nodes.values()) {
+      // C-1.4：软删除节点不参与时序衰减（保留证据待恢复）
+      if (node.deletedAt != null) continue
       const before = node.activation
       node.applyTimeDecay(now)
       // activation 变化 < 1e-9 视为稳定
@@ -412,6 +485,17 @@ export class CatsNet {
     const result = { added: [], merged: [], demoted: [], recordedPairs: 0 }
     const tNow = typeof now === 'number' && !Number.isNaN(now) ? now : Date.now()
 
+    // C-1.4：把"软删除"视为不存在（learnConcepts 不应该归纳/合并/降权已软删除节点）
+    //  但 hasAlive 在"是否新增"分支里要严格区分：
+    //  - hasAlive = "节点存在且未删除"（用于"是 a/b/c"判断）
+    //  - hasAny = "节点存在"（包括软删除，用于"是否可 addNode 覆盖"判断）
+    //  → 已软删除节点不复活，强行 addNode 会被 nodes.has() 拦截
+    const hasAlive = (id) => {
+      const n = this.nodes.get(id)
+      return Boolean(n) && n.deletedAt == null
+    }
+    const hasAny = (id) => this.nodes.has(id)
+
     // 1) 数据收集
     let episodeList = episodes
     if (!Array.isArray(episodeList)) {
@@ -443,8 +527,9 @@ export class CatsNet {
       if (result.added.length >= maxNew && !this._hasMergeCandidate(pair, frequent, tNow, mergeSimilarity)) {
         continue
       }
-      const a = this.nodes.get(pair.a)
-      const b = this.nodes.get(pair.b)
+      // C-1.4：把软删除视作"不存在"
+      const a = hasAlive(pair.a) ? this.nodes.get(pair.a) : null
+      const b = hasAlive(pair.b) ? this.nodes.get(pair.b) : null
       const conf = this._confidenceFromCount(pair.count)
 
       if (a && b) {
@@ -459,9 +544,10 @@ export class CatsNet {
         }
         // 否则保留两个独立节点（不强制合并）
       } else if (a && !b && !addedIds.has(pair.b) && !absorbed.has(pair.b)) {
-        // 仅 a 存在：归纳 b
+        // 仅 a 存在：归纳 b（但 b 已在 Map 中（含软删除）→ 跳过，避免复活）
         if (result.added.length >= maxNew) continue
         if (conf < minConfidence) continue
+        if (hasAny(pair.b)) continue // C-1.4：包括软删除的也算"已存在"，不复活
         const newNode = this.addNode({
           id: pair.b,
           type: 'abstract',
@@ -473,9 +559,10 @@ export class CatsNet {
         addedIds.add(pair.b)
         result.added.push(newNode)
       } else if (!a && b && !addedIds.has(pair.a) && !absorbed.has(pair.a)) {
-        // 仅 b 存在：归纳 a
+        // 仅 b 存在：归纳 a（但 a 已在 Map 中（含软删除）→ 跳过）
         if (result.added.length >= maxNew) continue
         if (conf < minConfidence) continue
+        if (hasAny(pair.a)) continue // C-1.4：同上
         const newNode = this.addNode({
           id: pair.a,
           type: 'abstract',
@@ -489,6 +576,8 @@ export class CatsNet {
         // 双方都不存在：尝试归纳两个（容量允许时）
         if (result.added.length + 2 > maxNew) continue
         if (conf < minConfidence) continue
+        // C-1.4：双方不在 hasAny 里才能 addNode（防止复活）
+        if (hasAny(pair.a) || hasAny(pair.b)) continue
         const na = this.addNode({ id: pair.a, type: 'abstract', level: 'semantic', confidence: conf })
         const nb = this.addNode({ id: pair.b, type: 'abstract', level: 'semantic', confidence: conf })
         na.connect(nb.id, 0.5, 'association', false)
@@ -501,6 +590,8 @@ export class CatsNet {
     // 5) 降权冷概念（90 天没激活 + activation < 0.3）
     const coldThresholdMs = coldDays * 24 * 3600 * 1000
     for (const node of this.nodes.values()) {
+      // C-1.4：软删除节点不参与降权
+      if (node.deletedAt != null) continue
       const last = typeof node.lastActivatedAt === 'number' ? node.lastActivatedAt : tNow
       const age = tNow - last
       if (age > coldThresholdMs && node.activation < 0.3) {
@@ -523,7 +614,9 @@ export class CatsNet {
   _hasMergeCandidate(pair, frequent, _now, threshold) {
     const a = this.nodes.get(pair.a)
     const b = this.nodes.get(pair.b)
-    if (!a || !b) return false
+    // C-1.4：软删除节点不参与合并候选判断
+    if (!a || a.deletedAt != null) return false
+    if (!b || b.deletedAt != null) return false
     return a.similarity(b) >= threshold
   }
 
@@ -559,6 +652,8 @@ export class CatsNet {
     const b = idB instanceof ConceptNode ? idB : this.nodes.get(idB)
     if (!a || !b) return null
     if (a.id === b.id) return null
+    // C-1.4：软删除节点不参与合并（避免把已删除节点的证据合并进来）
+    if (a.deletedAt != null || b.deletedAt != null) return null
     const [k, r] = a.confidence >= b.confidence ? [a, b] : [b, a]
     const merged = k.merge(r)
     // 清理自连接
@@ -618,6 +713,298 @@ export class CatsNet {
       redirected += 1
     }
     return redirected
+  }
+
+  // ---------------------------------------------------------------------------
+  // 编辑 API（C-1.4 阶段 4）—— 7 个公开 API
+  // ---------------------------------------------------------------------------
+
+  /**
+   * 1. 增量更新节点元数据（部分更新）。
+   *
+   * 支持的 patch 字段：name / type / level / attributes / granularity /
+   *   activationDecayRate / activationDecayModel
+   *
+   * 行为约束：
+   *   - 软删除节点不允许更新（避免恢复后看到与意图不一致的脏数据）
+   *   - attributes patch 是**整体替换**（不是 merge），便于原子性更新
+   *   - level / type 改动会走 setLevel() 走 history 留痕
+   *   - activation / confidence / salience / deletedAt / connections 不通过此 API 改
+   *     （请用专用方法：demote/boost/softDelete/restore/connect）
+   *
+   * @param {string} id
+   * @param {object} patch
+   * @returns {ConceptNode|null} 更新后的节点；id 不存在或已软删除返回 null
+   */
+  updateConcept(id, patch = {}) {
+    this._guard()
+    const node = this.nodes.get(id)
+    if (!node) return null
+    if (node.deletedAt != null) return null
+    if (!patch || typeof patch !== 'object') {
+      throw new TypeError('updateConcept 需要对象 patch')
+    }
+
+    // 名称
+    if (typeof patch.name === 'string' && patch.name.length > 0) {
+      node.name = patch.name
+      node._record?.({ op: 'updateName', to: patch.name })
+    }
+
+    // 类型
+    if (typeof patch.type === 'string') {
+      if (!CONCEPT_TYPES.includes(patch.type)) {
+        throw new RangeError(`未知概念类型: ${patch.type}`)
+      }
+      const from = node.type
+      node.type = patch.type
+      node._record?.({ op: 'updateType', from, to: patch.type })
+    }
+
+    // 层次
+    if (typeof patch.level === 'string') {
+      node.setLevel(patch.level) // 内部已留痕
+    }
+
+    // 属性（整体替换）
+    if (patch.attributes !== undefined) {
+      node.attributes = sanitizeAttributesLocal(patch.attributes)
+      node._record?.({ op: 'updateAttributes', keys: Object.keys(node.attributes) })
+    }
+
+    // 粒度
+    if (typeof patch.granularity === 'number') {
+      node.granularity = patch.granularity
+      node._record?.({ op: 'updateGranularity', to: patch.granularity })
+    }
+
+    // 时序衰减率
+    if (typeof patch.activationDecayRate === 'number' && patch.activationDecayRate >= 0) {
+      node.activationDecayRate = patch.activationDecayRate
+      node._record?.({ op: 'updateDecayRate', to: patch.activationDecayRate })
+    }
+
+    if (typeof patch.activationDecayModel === 'string') {
+      if (ACTIVATION_DECAY_MODELS.includes(patch.activationDecayModel)) {
+        node.activationDecayModel = patch.activationDecayModel
+        node._record?.({ op: 'updateDecayModel', to: patch.activationDecayModel })
+      }
+    }
+
+    return node
+  }
+
+  /**
+   * 2. 合并多个 concept（公开版，原 _mergeNodes 升级）。
+   *
+   * 行为：
+   *   - ids[0] 默认作为 keeper（除非 newId 提供）
+   *   - 多个非 keeper id 依次 merge 进 keeper
+   *   - 重定向所有指向被合并节点的连接 → keeper
+   *   - 重定向 projection memory.concepts[] 中的 id
+   *
+   * @param {string[]} ids                              要合并的节点 id 列表（至少 2 个）
+   * @param {string} [newId]                            新 keeper id；不传则用 ids[0]
+   * @param {object} [newAttributes]                    合并后强制覆盖的属性（整体替换）
+   * @returns {{ merged: ConceptNode, removed: string[], redirected: number }|null}
+   *          ids 不足 2 个 / 全部不存在 / 全是软删除 → 返回 null
+   */
+  mergeConcepts(ids, newId, newAttributes) {
+    this._guard()
+    if (!Array.isArray(ids) || ids.length < 2) {
+      throw new TypeError('mergeConcepts 至少需要 2 个 id')
+    }
+    // 去重 + 过滤软删除 + 过滤不存在
+    const validIds = []
+    for (const id of ids) {
+      if (typeof id !== 'string' || id.length === 0) continue
+      const n = this.nodes.get(id)
+      if (!n || n.deletedAt != null) continue
+      if (!validIds.includes(id)) validIds.push(id)
+    }
+    if (validIds.length < 2) return null
+
+    // 决定 keeper id
+    const keeperId = (typeof newId === 'string' && newId.length > 0) ? newId : validIds[0]
+
+    // 处理 newId 跟 ids 重叠的情况
+    let keeper = this.nodes.get(keeperId)
+    let allRemoved = validIds.filter((id) => id !== keeperId)
+
+    // 如果 newId 提供的 keeper 还不存在，需要先 addNode 一个空的 keeper
+    if (!keeper) {
+      // 从 validIds[0] 借用类型/层次/粒度
+      const sample = this.nodes.get(validIds[0])
+      keeper = this.addNode({
+        id: keeperId,
+        name: sample.name,
+        type: sample.type,
+        level: sample.level,
+        granularity: sample.granularity,
+      })
+      // 把它从 allRemoved 里排除（newId 显式指定，不会是 removed）
+      allRemoved = validIds.filter((id) => id !== keeperId)
+    } else if (keeper.deletedAt != null) {
+      // keeper 本身是软删除 → 不允许合并
+      return null
+    }
+
+    // 依次把 validIds 里非 keeper 的节点 merge 进 keeper
+    let totalRedirected = 0
+    const removedList = []
+    for (const rid of allRemoved) {
+      const r = this.nodes.get(rid)
+      if (!r || r.deletedAt != null) continue
+      const result = this._mergeNodes(keeper, r)
+      if (result) {
+        totalRedirected += result.redirected
+        removedList.push(result.removed)
+        // _mergeNodes 会替换 this.nodes[keeperId]，需要刷新 keeper 引用
+        keeper = this.nodes.get(keeperId)
+      }
+    }
+
+    // 应用 newAttributes 强制覆盖（如果提供）
+    if (newAttributes && typeof newAttributes === 'object' && keeper) {
+      keeper.attributes = sanitizeAttributesLocal(newAttributes)
+      keeper._record?.({ op: 'mergeAttributes', keys: Object.keys(keeper.attributes) })
+    }
+
+    return {
+      merged: keeper,
+      removed: removedList,
+      redirected: totalRedirected,
+    }
+  }
+
+  /**
+   * 3. 拆分一个 concept。
+   *
+   * 行为：
+   *   - 保留原节点（不动 attributes / connections）
+   *   - 为 parts 数组每个 part 创建一个新 ConceptNode
+   *   - 原节点与每个子节点建立 hierarchical 弱连接（单向）
+   *
+   * @param {string} id
+   * @param {Array<{id?: string, name?: string, type?: string, level?: string, attributes?: object, weight?: number}>} parts
+   * @returns {{ original: ConceptNode, children: ConceptNode[] }|null}
+   *          id 不存在 / 软删除 / parts 为空 → 返回 null
+   */
+  splitConcept(id, parts) {
+    this._guard()
+    const original = this.nodes.get(id)
+    if (!original || original.deletedAt != null) return null
+    if (!Array.isArray(parts) || parts.length === 0) {
+      throw new TypeError('splitConcept 需要非空 parts 数组')
+    }
+
+    const children = []
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i] || {}
+      // 自动生成子节点 id（如果没传）
+      const childId = typeof part.id === 'string' && part.id.length > 0
+        ? part.id
+        : `${id}#split-${i}`
+
+      // 不允许覆盖已存在的活跃节点
+      if (this.nodes.has(childId) && this.isAlive(childId)) {
+        throw new Error(`splitConcept 子节点 id 已存在: ${childId}`)
+      }
+
+      // 构造子节点
+      const child = this.addNode({
+        id: childId,
+        name: typeof part.name === 'string' && part.name.length > 0 ? part.name : `${original.name}.${i}`,
+        type: typeof part.type === 'string' ? part.type : original.type,
+        level: typeof part.level === 'string' ? part.level : original.level,
+        attributes: part.attributes && typeof part.attributes === 'object' ? part.attributes : {},
+        granularity: Math.max(0, original.granularity - 1),
+        confidence: original.confidence,
+      })
+
+      // 建立父子 hierarchical 弱连接（单向，weight 来自 part 或默认 0.5）
+      const w = typeof part.weight === 'number' ? part.weight : 0.5
+      original.connect(childId, w, 'hierarchical', false)
+      child.connect(original.id, w, 'hierarchical', false)
+
+      original._record?.({ op: 'splitChild', childId, weight: w })
+      children.push(child)
+    }
+
+    return { original, children }
+  }
+
+  /**
+   * 4. 降权（保留节点，可恢复）。
+   *
+   * 关键设计（ADR-002 §3.4.2）：
+   *   - **只**改 salience，**不动** confidence / activation
+   *   - 公式：salience *= factor，clamp [0,1]
+   *
+   * @param {string} id
+   * @param {number} [factor=0.5]
+   * @returns {ConceptNode|null} 降权后的节点；id 不存在 / 软删除 → null
+   */
+  demoteConcept(id, factor = 0.5) {
+    this._guard()
+    const node = this.nodes.get(id)
+    if (!node || node.deletedAt != null) return null
+    node.demote(factor) // 内部已留痕 + 兜底非法 factor
+    return node
+  }
+
+  /**
+   * 5. 提权（反向降权）。
+   *
+   * 关键设计（ADR-002 §3.4.2）：
+   *   - **只**改 salience，**不动** confidence / activation
+   *   - 公式：salience *= factor，clamp [0,1]
+   *
+   * @param {string} id
+   * @param {number} [factor=1.2]
+   * @returns {ConceptNode|null} 提权后的节点；id 不存在 / 软删除 → null
+   */
+  boostConcept(id, factor = 1.2) {
+    this._guard()
+    const node = this.nodes.get(id)
+    if (!node || node.deletedAt != null) return null
+    node.boost(factor)
+    return node
+  }
+
+  /**
+   * 6. 软删除（保留 30 天逻辑，process / spread / learn 全部跳过）。
+   *
+   * 行为：
+   *   - 节点**保留在 Map**（getNode(id) 仍返回），便于后续 restore
+   *   - 设 deletedAt = now；之后 isAlive(id) === false
+   *   - 重复 softDelete：覆盖 deletedAt 为新时间戳
+   *
+   * @param {string} id
+   * @returns {boolean} true = 之前未删除并已软删除；false = id 不存在 / 已是软删除
+   */
+  softDeleteConcept(id) {
+    this._guard()
+    const node = this.nodes.get(id)
+    if (!node) return false
+    if (node.deletedAt != null) return false // 已删除，幂等返回 false
+    node.softDelete(Date.now())
+    return true
+  }
+
+  /**
+   * 7. 恢复软删除。
+   *
+   * @param {string} id
+   * @returns {ConceptNode|null} 恢复后的节点；id 不存在 / 未软删除 → null
+   */
+  restoreConcept(id) {
+    this._guard()
+    const node = this.nodes.get(id)
+    if (!node) return null
+    if (node.deletedAt == null) return null
+    node.restore()
+    return node
   }
 
   // ---------------------------------------------------------------------------

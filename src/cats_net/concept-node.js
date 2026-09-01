@@ -133,6 +133,8 @@ export class ConceptNode {
    * @param {number} [options.lastActivatedAt] 最近一次激活时间戳（ms），默认 Date.now()
    * @param {number} [options.activationDecayRate] 时序衰减率（按小时），默认按 level 自动选
    * @param {string} [options.activationDecayModel] 衰减模型，默认 'exponential'
+   * @param {number} [options.salience]  重要性权重 [0,1]（C-1.4 阶段 4 新增），默认 = confidence
+   * @param {number|null} [options.deletedAt] 软删除时间戳（ms），C-1.4 阶段 4 新增；非 null 视为已软删除
    */
   constructor({
     id,
@@ -146,6 +148,8 @@ export class ConceptNode {
     lastActivatedAt,
     activationDecayRate,
     activationDecayModel = 'exponential',
+    salience,
+    deletedAt = null,
   } = {}) {
     if (typeof id !== 'string' || id.length === 0) {
       throw new TypeError('ConceptNode 需要非空字符串 id')
@@ -155,6 +159,9 @@ export class ConceptNode {
     }
     if (!CONCEPT_LEVELS.includes(level)) {
       throw new RangeError(`未知概念层次: ${level}，合法值为 ${CONCEPT_LEVELS.join(', ')}`)
+    }
+    if (deletedAt !== null && (typeof deletedAt !== 'number' || !Number.isFinite(deletedAt))) {
+      throw new TypeError('deletedAt 需要有限数值或 null')
     }
 
     this.id = id
@@ -174,6 +181,16 @@ export class ConceptNode {
     this.activationDecayModel = ACTIVATION_DECAY_MODELS.includes(activationDecayModel)
       ? activationDecayModel
       : 'exponential'
+
+    // C-1.4 阶段 4：编辑 API 字段
+    //   - salience：重要性权重，独立于 confidence/activation；
+    //     默认 = confidence（向后兼容：旧节点没显式设时跟着 evidence 走）
+    //   - deletedAt：软删除时间戳；非 null 视为已软删除（process / spread / learn 跳过）
+    this.salience = clamp(
+      typeof salience === 'number' ? salience : confidence,
+      0, 1,
+    )
+    this.deletedAt = deletedAt
 
     /** @type {Map<string, {weight:number, type:string, bidirectional:boolean}>} */
     this.connections = new Map()
@@ -488,7 +505,11 @@ export class ConceptNode {
       attributes,
       activation: Math.max(this.activation, other.activation),
       confidence: clamp(this.confidence * wThis + other.confidence * wOther, 0, 1),
+      // C-1.4：salience 也按 confidence 加权平均（重要性随证据强度走）
+      salience: clamp(this.salience * wThis + other.salience * wOther, 0, 1),
       granularity: Math.max(this.granularity, other.granularity),
+      // C-1.4：deletedAt 取并集（任一被软删除 → 合并后也视为软删除）
+      deletedAt: this.deletedAt != null ? this.deletedAt : other.deletedAt,
     })
 
     // 连接并集，重复连接权重取平均
@@ -530,6 +551,87 @@ export class ConceptNode {
     this.level = level
     this._record({ op: 'setLevel', from, to: level })
     return this
+  }
+
+  // ---------------------------------------------------------------------------
+  // 编辑 API（C-1.4 阶段 4）—— salience 调整 + 软删除
+  // ---------------------------------------------------------------------------
+
+  /**
+   * 降权（保留节点，可恢复）。
+   *
+   * 关键设计（ADR-002 §3.4.2）：
+   *   - **只**改 salience，**不动** confidence / activation
+   *   - 公式：salience *= factor，clamp [0,1]
+   *   - 不抛错：factor 非法时按 0.5 兜底（防御性，不破调用方）
+   *
+   * @param {number} [factor=0.5]
+   * @returns {number} 降权后的 salience
+   */
+  demote(factor = 0.5) {
+    const f = (typeof factor === 'number' && Number.isFinite(factor) && factor > 0) ? factor : 0.5
+    const before = this.salience
+    this.salience = clamp(this.salience * f, 0, 1)
+    this._record({ op: 'demote', factor: f, before, after: this.salience })
+    return this.salience
+  }
+
+  /**
+   * 提权（反向降权）。
+   *
+   * 关键设计（ADR-002 §3.4.2）：
+   *   - **只**改 salience，**不动** confidence / activation
+   *   - 公式：salience *= factor，clamp [0,1]
+   *
+   * @param {number} [factor=1.2]
+   * @returns {number} 提权后的 salience
+   */
+  boost(factor = 1.2) {
+    const f = (typeof factor === 'number' && Number.isFinite(factor) && factor > 0) ? factor : 1.2
+    const before = this.salience
+    this.salience = clamp(this.salience * f, 0, 1)
+    this._record({ op: 'boost', factor: f, before, after: this.salience })
+    return this.salience
+  }
+
+  /**
+   * 软删除（节点保留在 Map，可通过 restore 恢复）。
+   *
+   * 行为：
+   *   - 设 deletedAt = now（默认 Date.now()），process / spread / learn 等查询会跳过
+   *   - 不动 activation / confidence / connections
+   *   - 重复 softDelete：覆盖 deletedAt 为新时间戳
+   *
+   * @param {number} [now=Date.now()]
+   * @returns {number} 设置的 deletedAt 时间戳
+   */
+  softDelete(now = Date.now()) {
+    const ts = typeof now === 'number' && Number.isFinite(now) ? now : Date.now()
+    const before = this.deletedAt
+    this.deletedAt = ts
+    this._record({ op: 'softDelete', before, after: ts })
+    return ts
+  }
+
+  /**
+   * 恢复软删除（清 deletedAt）。
+   *
+   * @returns {boolean} true = 之前是软删除态并已恢复；false = 本来就没被删除
+   */
+  restore() {
+    if (this.deletedAt == null) return false
+    const before = this.deletedAt
+    this.deletedAt = null
+    this._record({ op: 'restore', before })
+    return true
+  }
+
+  /**
+   * 是否处于软删除态。
+   * @returns {boolean}
+   */
+  isDeleted() {
+    return this.deletedAt != null
   }
 
   /**
@@ -599,6 +701,8 @@ export class ConceptNode {
     const seenEdges = new Set()
 
     for (const node of map.values()) {
+      // C-1.4：3D 可视化跳过软删除节点（deletedAt != null）
+      if (node.deletedAt != null) continue
       const lvl = node.level ?? 'semantic'
       outNodes.push({
         id: node.id,
@@ -608,6 +712,8 @@ export class ConceptNode {
         activation: node.activation,
         confidence: node.confidence,
         granularity: node.granularity,
+        // C-1.4 阶段 4 新增：salience 字段
+        salience: node.salience,
       })
       if (layerStats[lvl]) {
         layerStats[lvl].count++
@@ -616,6 +722,8 @@ export class ConceptNode {
       for (const [targetId, meta] of node.connections) {
         if (!map.has(targetId)) continue
         const target = map.get(targetId)
+        // C-1.4：边也跳过软删除目标（指向被软删除的节点的连接不渲染）
+        if (target.deletedAt != null) continue
         const targetLvl = target.level ?? 'semantic'
         // 去重：保留单向记一次，按 id 字典序较小的为 source
         const edgeKey = node.id < targetId ? `${node.id}|${targetId}` : `${targetId}|${node.id}`
@@ -661,6 +769,9 @@ export class ConceptNode {
       lastActivatedAt: this.lastActivatedAt,
       activationDecayRate: this.activationDecayRate,
       activationDecayModel: this.activationDecayModel,
+      // C-1.4 阶段 4：编辑 API 字段
+      salience: this.salience,
+      deletedAt: this.deletedAt,
       connections: this.getConnections(),
       history: this.history.map((h) => ({ ...h })),
     }
@@ -672,6 +783,8 @@ export class ConceptNode {
    *   - 旧数据无 level 字段时回退到 'semantic'
    *   - 旧数据无 lastActivatedAt 时从 history[0].ts 推断（无 history 则用 Date.now()）
    *   - 旧数据无 activationDecayRate 时按 level 自动选（构造器逻辑）
+   *   - 旧数据无 salience 字段时回退 = confidence（构造器逻辑，保证 demo / 旧快照可用）
+   *   - 旧数据无 deletedAt 字段时回退 = null（视为未删除）
    * @param {object} data
    * @returns {ConceptNode}
    */
@@ -697,6 +810,9 @@ export class ConceptNode {
       lastActivatedAt: inferredLastActivatedAt,
       activationDecayRate: data.activationDecayRate,
       activationDecayModel: data.activationDecayModel,
+      // C-1.4：salience / deletedAt 字段
+      salience: typeof data.salience === 'number' ? data.salience : undefined,
+      deletedAt: typeof data.deletedAt === 'number' ? data.deletedAt : null,
     })
     if (Array.isArray(data.connections)) {
       for (const c of data.connections) {
