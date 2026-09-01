@@ -29,3 +29,4 @@ export {
   CATS_NET_VERSION,
 } from './serializer.js'
 export { MemoryProjection, MemoryEntry } from './memory-projection.js'
+export { CooccurrenceTracker } from './cooccurrence.js'

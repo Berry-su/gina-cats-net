@@ -39,6 +39,9 @@ export class Serializer {
 
   /**
    * schema 校验。返回 { valid, errors }，不抛异常。
+   *
+   * C-1.3：cooccurrence 字段为可选（向后兼容 v0.3.0 之前无此字段的快照）。
+   *
    * @param {object} data
    * @returns {{valid:boolean, errors:string[]}}
    */
@@ -65,11 +68,17 @@ export class Serializer {
     if (data.memory !== undefined && !Array.isArray(data.memory)) {
       errors.push('memory 必须是数组')
     }
+    if (data.cooccurrence !== undefined && (typeof data.cooccurrence !== 'object' || data.cooccurrence === null || Array.isArray(data.cooccurrence))) {
+      errors.push('cooccurrence 必须是对象（缺失视为空 tracker，向后兼容）')
+    }
     return { valid: errors.length === 0, errors }
   }
 
   /**
    * 将内存快照标准化为可持久化的纯对象（补全 format/version/savedAt）。
+   *
+   * C-1.3：保留 cooccurrence 字段（如果快照里有）。
+   *
    * @param {object} snapshot 内核产出的快照（nodes 需为 ConceptNode.toJSON() 数组或等价纯对象）
    * @returns {object} 可直接 JSON.stringify 的纯对象
    */
@@ -84,6 +93,9 @@ export class Serializer {
       memory: Array.isArray(snapshot.memory) ? snapshot.memory : [],
       meta: snapshot.meta && typeof snapshot.meta === 'object' ? snapshot.meta : {},
     }
+    if (snapshot.cooccurrence && typeof snapshot.cooccurrence === 'object') {
+      normalized.cooccurrence = snapshot.cooccurrence
+    }
     const { valid, errors } = this.validate(normalized)
     if (!valid) throw new Error(`快照校验失败: ${errors.join('; ')}`)
     return normalized
@@ -91,8 +103,11 @@ export class Serializer {
 
   /**
    * 从持久化数据反序列化为内存快照（含 ConceptNode 实例化的 Map）。
+   *
+   * C-1.3：返回结构带 cooccurrence 字段（如果有），CatsNet.deserialize 负责恢复 CooccurrenceTracker。
+   *
    * @param {object} data
-   * @returns {{format:string, version:string, savedAt:string, nodes:Map<string,ConceptNode>, memory:Array, meta:object}}
+   * @returns {{format:string, version:string, savedAt:string, nodes:Map<string,ConceptNode>, memory:Array, cooccurrence:object|undefined, meta:object}}
    */
   deserialize(data) {
     const { valid, errors } = this.validate(data)
@@ -109,6 +124,7 @@ export class Serializer {
       savedAt: data.savedAt,
       nodes,
       memory: data.memory ?? [],
+      cooccurrence: data.cooccurrence, // 透传：可能是 undefined（向后兼容）
       meta: data.meta ?? {},
     }
   }

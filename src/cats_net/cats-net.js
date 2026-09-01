@@ -17,6 +17,16 @@ import { ConceptNode } from './concept-node.js'
 import { ConflictResolver } from './conflict-resolver.js'
 import { MemoryProjection } from './memory-projection.js'
 import { Serializer } from './serializer.js'
+import { CooccurrenceTracker } from './cooccurrence.js'
+
+/** 概念自学习（C-1.3）—— 冷概念降权阈值：90 天没激活。 */
+const LEARN_COLD_DAYS = 90
+/** 概念自学习（C-1.3）—— 冷概念降权因子（C-1.4 将迁移到 salience 字段）。 */
+const LEARN_DEMOTE_FACTOR = 0.5
+/** 概念自学习（C-1.3）—— 相似度 ≥ 此阈值时自动合并。 */
+const LEARN_MERGE_SIMILARITY = 0.6
+/** 概念自学习（C-1.3）—— Laplace 平滑常数（影响"新概念入选 confidence"门槛）。 */
+const LEARN_LAPLACE_K = 2
 
 export class CatsNet {
   /**
@@ -25,12 +35,14 @@ export class CatsNet {
    * @param {number} [options.timeoutMs]      单次处理的总超时（毫秒）
    * @param {number} [options.decayFactor]    激活扩散传播衰减系数
    * @param {object} [options.resolverOptions] 透传给 ConflictResolver
+   * @param {object} [options.cooccurrenceOptions] 透传给 CooccurrenceTracker
    */
   constructor({
     maxIterations = 100,
     timeoutMs = 5000,
     decayFactor = 0.5,
     resolverOptions = {},
+    cooccurrenceOptions = {},
   } = {}) {
     this.maxIterations = maxIterations
     this.timeoutMs = timeoutMs
@@ -44,6 +56,8 @@ export class CatsNet {
     this.projection = new MemoryProjection()
     /** @type {Serializer} */
     this.serializer = new Serializer()
+    /** @type {CooccurrenceTracker} C-1.3：概念自学习共现追踪器 */
+    this.cooccurrence = new CooccurrenceTracker(cooccurrenceOptions)
 
     this._aborted = false
   }
@@ -95,10 +109,11 @@ export class CatsNet {
     return this.nodes.size
   }
 
-  /** 重置为初始状态（清空节点/记忆并复位终止旗标）。 */
+  /** 重置为初始状态（清空节点/记忆/共现追踪器并复位终止旗标）。 */
   reset() {
     this.nodes = new Map()
     this.projection = new MemoryProjection()
+    this.cooccurrence = new CooccurrenceTracker()
     this._aborted = false
   }
 
@@ -345,6 +360,267 @@ export class CatsNet {
   }
 
   // ---------------------------------------------------------------------------
+  // 概念自学习（C-1.3 阶段 3）—— learnConcepts + 4 重护栏
+  // ---------------------------------------------------------------------------
+
+  /**
+   * 概念自学习：归纳新概念 + 合并旧概念 + 降权冷概念（ADR-002 §3.3.3）。
+   *
+   * 算法流程：
+   *   1) 数据收集：episodes 缺省从 projection.getMemories() 拉（每条 memory 的 concepts[] 是一次共现）
+   *   2) 共现统计：this.cooccurrence.recordEpisode() 遍历所有 (a,b) pair
+   *   3) 高频筛选：cooccurrence.getFrequentPairs({ minCount: 5 })
+   *   4) 相似度判断：高频 pair 调 a.similarity(b)：
+   *        - 双方都已存在 + similarity >= 0.6 → 合并（mergeConcepts 内部动作）
+   *        - 仅一方存在 + Laplace 平滑后的 confidence >= minConfidence → 归纳另一方
+   *        - 双方都不存在 + 同上 + 容量允许 → 归纳两个新概念
+   *   5) 降权冷概念：90 天没激活且 activation < 0.3 的节点 → confidence *= 0.5
+   *   6) 返回：{ added: ConceptNode[], merged: {from,to,similarity}[], demoted: {id, beforeConfidence, afterConfidence}[] }
+   *
+   * 4 重护栏（防概念爆炸）：
+   *   1) LRU 10k 上限：CooccurrenceTracker.maxPairs（构造时或 options.cooccurrenceOptions 配）
+   *   2) minCount 5：pair 累计次数需 >= 5（CooccurrenceTracker.minCount）
+   *   3) maxNew 10：单次新增节点上限
+   *   4) halfLife 1 周：旧共现自动衰减（CooccurrenceTracker.halfLifeHours=168）
+   *
+   * @param {object} [options]
+   * @param {Array<{concepts: string[], timestamp?: number}>} [options.episodes]
+   *        外部 episode 流；缺省从 projection.getMemories() 拉
+   * @param {number} [options.minConfidence=0.7] 新概念入选门槛（基于 Laplace 平滑后的 confidence）
+   * @param {number} [options.maxNew=10]         本次新增概念数上限（每个 addNode 算 1）
+   * @param {number} [options.now=Date.now()]    衰减参照时间（便于测试用 withMockTime）
+   * @param {number} [options.coldDays=90]       冷概念天数阈值
+   * @param {number} [options.mergeSimilarity=0.6] 合并相似度门槛
+   * @returns {{ added: ConceptNode[], merged: {from:string, to:string, similarity:number}[], demoted: {id:string, beforeConfidence:number, afterConfidence:number}[], recordedPairs: number }}
+   */
+  learnConcepts({
+    episodes,
+    minConfidence = 0.7,
+    maxNew = 10,
+    now = Date.now(),
+    coldDays = LEARN_COLD_DAYS,
+    mergeSimilarity = LEARN_MERGE_SIMILARITY,
+  } = {}) {
+    this._guard()
+    if (typeof minConfidence !== 'number' || !(minConfidence > 0)) {
+      throw new TypeError('learnConcepts 需要正数 minConfidence')
+    }
+    if (typeof maxNew !== 'number' || !(maxNew >= 0)) {
+      throw new TypeError('learnConcepts 需要非负 maxNew')
+    }
+
+    const result = { added: [], merged: [], demoted: [], recordedPairs: 0 }
+    const tNow = typeof now === 'number' && !Number.isNaN(now) ? now : Date.now()
+
+    // 1) 数据收集
+    let episodeList = episodes
+    if (!Array.isArray(episodeList)) {
+      // 从 projection 拉：每条 memory 的 concepts[] + timestamp
+      const memories = this.projection.getMemories()
+      episodeList = memories.map((m) => ({
+        concepts: Array.isArray(m.concepts) ? m.concepts : [],
+        timestamp: typeof m.timestamp === 'number' ? m.timestamp : tNow,
+      }))
+    }
+
+    // 2) 共现统计
+    for (const ep of episodeList) {
+      if (!ep || !Array.isArray(ep.concepts) || ep.concepts.length < 2) continue
+      const ts = typeof ep.timestamp === 'number' ? ep.timestamp : tNow
+      const r = this.cooccurrence.recordEpisode(ep.concepts, ts)
+      result.recordedPairs += r.recorded
+    }
+
+    // 3) 高频筛选
+    const frequent = this.cooccurrence.getFrequentPairs({ now: tNow })
+
+    // 4) 相似度判断 + 合并 / 新增
+    const addedIds = new Set() // 本次新归纳的 id，避免重复添加
+    const absorbed = new Set() // 本次被合并掉的 id，后续 pair 涉及则跳过
+    for (const pair of frequent) {
+      // 已被合并掉的 id 跳过（防止后续 pair 把它当"不存在"又归纳回来）
+      if (absorbed.has(pair.a) || absorbed.has(pair.b)) continue
+      if (result.added.length >= maxNew && !this._hasMergeCandidate(pair, frequent, tNow, mergeSimilarity)) {
+        continue
+      }
+      const a = this.nodes.get(pair.a)
+      const b = this.nodes.get(pair.b)
+      const conf = this._confidenceFromCount(pair.count)
+
+      if (a && b) {
+        // 双方都存在：检查相似度决定是否合并
+        const sim = a.similarity(b)
+        if (sim >= mergeSimilarity) {
+          const m = this._mergeNodes(a, b)
+          if (m) {
+            result.merged.push({ from: m.removed, to: m.kept, similarity: sim })
+            absorbed.add(m.removed)
+          }
+        }
+        // 否则保留两个独立节点（不强制合并）
+      } else if (a && !b && !addedIds.has(pair.b) && !absorbed.has(pair.b)) {
+        // 仅 a 存在：归纳 b
+        if (result.added.length >= maxNew) continue
+        if (conf < minConfidence) continue
+        const newNode = this.addNode({
+          id: pair.b,
+          type: 'abstract',
+          level: 'semantic',
+          confidence: conf,
+        })
+        // 新归纳的节点跟 a 建弱连接，方便后续激活扩散
+        newNode.connect(a.id, 0.5, 'association', false)
+        addedIds.add(pair.b)
+        result.added.push(newNode)
+      } else if (!a && b && !addedIds.has(pair.a) && !absorbed.has(pair.a)) {
+        // 仅 b 存在：归纳 a
+        if (result.added.length >= maxNew) continue
+        if (conf < minConfidence) continue
+        const newNode = this.addNode({
+          id: pair.a,
+          type: 'abstract',
+          level: 'semantic',
+          confidence: conf,
+        })
+        newNode.connect(b.id, 0.5, 'association', false)
+        addedIds.add(pair.a)
+        result.added.push(newNode)
+      } else if (!a && !b) {
+        // 双方都不存在：尝试归纳两个（容量允许时）
+        if (result.added.length + 2 > maxNew) continue
+        if (conf < minConfidence) continue
+        const na = this.addNode({ id: pair.a, type: 'abstract', level: 'semantic', confidence: conf })
+        const nb = this.addNode({ id: pair.b, type: 'abstract', level: 'semantic', confidence: conf })
+        na.connect(nb.id, 0.5, 'association', false)
+        addedIds.add(pair.a)
+        addedIds.add(pair.b)
+        result.added.push(na, nb)
+      }
+    }
+
+    // 5) 降权冷概念（90 天没激活 + activation < 0.3）
+    const coldThresholdMs = coldDays * 24 * 3600 * 1000
+    for (const node of this.nodes.values()) {
+      const last = typeof node.lastActivatedAt === 'number' ? node.lastActivatedAt : tNow
+      const age = tNow - last
+      if (age > coldThresholdMs && node.activation < 0.3) {
+        const before = node.confidence
+        const after = Math.max(0, before * LEARN_DEMOTE_FACTOR)
+        node.confidence = after
+        // 同步到 _record 让 history 留痕（C-1.4 会迁移到 salience 字段）
+        node._record?.({ op: 'learnDemote', before, after, reason: 'cold' })
+        result.demoted.push({ id: node.id, beforeConfidence: before, afterConfidence: after })
+      }
+    }
+
+    return result
+  }
+
+  /**
+   * 判断 pair 是否可能产生合并（用于 maxNew 边界判断的辅助）。
+   * @private
+   */
+  _hasMergeCandidate(pair, frequent, _now, threshold) {
+    const a = this.nodes.get(pair.a)
+    const b = this.nodes.get(pair.b)
+    if (!a || !b) return false
+    return a.similarity(b) >= threshold
+  }
+
+  /**
+   * 用 Laplace 平滑把 pair count 映射为新概念的 confidence：
+   *   confidence = count / (count + K)，K=2
+   * 这样 count=5 → 0.714，count=7 → 0.778，与默认 minConfidence=0.7 协调。
+   * @param {number} count
+   * @returns {number}
+   */
+  _confidenceFromCount(count) {
+    if (typeof count !== 'number' || count <= 0) return 0
+    return count / (count + LEARN_LAPLACE_K)
+  }
+
+  /**
+   * 合并两个节点（内部用，C-1.3 learnConcepts 触发，C-1.4 公开为 mergeConcepts）。
+   *
+   * 行为：
+   *   - 保留 confidence 较高一方作 keeper（生成 merged，id/name 取 keeper）
+   *   - 合并属性、连接、激活值（沿用 ConceptNode.merge 规则）
+   *   - 移除被合并方
+   *   - 重定向其他节点指向被合并方的连接（合并到 keeper 上）
+   *   - 重定向 projection memory.concepts[] 中的 id
+   *   - 清理自连接（merged 上不允许指向自身）
+   *
+   * @param {string|ConceptNode} idA  节点 id 或 ConceptNode 实例
+   * @param {string|ConceptNode} idB  节点 id 或 ConceptNode 实例
+   * @returns {{merged:ConceptNode, kept:string, removed:string, redirected:number}|null}
+   */
+  _mergeNodes(idA, idB) {
+    const a = idA instanceof ConceptNode ? idA : this.nodes.get(idA)
+    const b = idB instanceof ConceptNode ? idB : this.nodes.get(idB)
+    if (!a || !b) return null
+    if (a.id === b.id) return null
+    const [k, r] = a.confidence >= b.confidence ? [a, b] : [b, a]
+    const merged = k.merge(r)
+    // 清理自连接
+    merged.connections.delete(merged.id)
+    this.nodes.set(k.id, merged)
+    this.nodes.delete(r.id)
+    const redirected = this._redirectConnections(r.id, k.id)
+    this._redirectMemories(r.id, k.id)
+    return { merged, kept: k.id, removed: r.id, redirected }
+  }
+
+  /**
+   * 把所有其他节点对 fromId 的连接重定向到 toId（连接不存在时新增，重复时合并权重取平均）。
+   * @param {string} fromId
+   * @param {string} toId
+   * @returns {number} 重定向的连接数
+   */
+  _redirectConnections(fromId, toId) {
+    if (fromId === toId) return 0
+    let redirected = 0
+    for (const node of this.nodes.values()) {
+      if (node.id === toId) continue
+      if (!node.connections.has(fromId)) continue
+      const meta = node.connections.get(fromId)
+      node.connections.delete(fromId)
+      if (!node.connections.has(toId)) {
+        node.connections.set(toId, { ...meta })
+      } else {
+        // 已存在 → 合并权重
+        const existing = node.connections.get(toId)
+        existing.weight = (existing.weight + meta.weight) / 2
+        existing.bidirectional = existing.bidirectional || meta.bidirectional
+      }
+      redirected += 1
+    }
+    return redirected
+  }
+
+  /**
+   * 把 projection memory 中所有 fromId 引用重定向到 toId。
+   * @param {string} fromId
+   * @param {string} toId
+   * @returns {number} 重定向的记忆数
+   */
+  _redirectMemories(fromId, toId) {
+    if (fromId === toId) return 0
+    let redirected = 0
+    for (const mem of this.projection.memories.values()) {
+      if (!Array.isArray(mem.concepts)) continue
+      const idx = mem.concepts.indexOf(fromId)
+      if (idx < 0) continue
+      mem.concepts[idx] = toId
+      if (mem.activationPattern && Object.prototype.hasOwnProperty.call(mem.activationPattern, fromId)) {
+        mem.activationPattern[toId] = mem.activationPattern[fromId]
+        delete mem.activationPattern[fromId]
+      }
+      redirected += 1
+    }
+    return redirected
+  }
+
+  // ---------------------------------------------------------------------------
   // 冲突消解 / 记忆投影
   // ---------------------------------------------------------------------------
 
@@ -491,18 +767,25 @@ export class CatsNet {
 
   /**
    * 产出内核快照（纯对象，供 Serializer 标准化与落盘）。
-   * @returns {{nodes:Array, memory:Array, meta:object}}
+   *
+   * C-1.3：额外携带 cooccurrence 字段（CooccurrenceTracker 状态），便于持久化自学习信号。
+   *
+   * @returns {{nodes:Array, memory:Array, cooccurrence:object, meta:object}}
    */
   serialize() {
     return {
       nodes: Array.from(this.nodes.values()).map((n) => n.toJSON()),
       memory: this.projection.toJSON(),
+      cooccurrence: this.cooccurrence.toJSON(),
       meta: { nodeCount: this.nodes.size, memoryCount: this.projection.size },
     }
   }
 
   /**
    * 从快照数据恢复内核状态。
+   * 向后兼容：
+   *   - 旧快照无 cooccurrence 字段 → 初始化为空 CooccurrenceTracker
+   *   - 旧快照有 cooccurrence 字段 → 完整恢复（maxPairs / minCount / halfLifeHours / pairs）
    * @param {object} data 来自 Serializer.deserialize / loadFromFile 的结果
    * @returns {this}
    */
@@ -518,6 +801,12 @@ export class CatsNet {
       throw new TypeError('deserialize 需要 nodes 为 Map 或数组')
     }
     this.projection.fromJSON(data.memory ?? [])
+    if (data.cooccurrence && typeof data.cooccurrence === 'object') {
+      this.cooccurrence.fromJSON(data.cooccurrence)
+    } else {
+      // 旧快照无 cooccurrence 字段 → 重置为空 tracker
+      this.cooccurrence = new CooccurrenceTracker()
+    }
     return this
   }
 
