@@ -174,3 +174,68 @@ git push origin main
 MIT — 详见 [LICENSE](./LICENSE) 文件。
 
 Copyright © 2026 Berry.Su
+
+---
+
+## 9. 内核包开发指南
+
+### 9.1 跑测试
+
+```bash
+cd ~/Desktop/GINA/gina增加计划登记
+pnpm test                # 全套（cats_net + memory + state_machine + ...）
+pnpm run test:cats-net   # 只跑 CATS-Net 子图
+```
+
+**测试基线**：16 测试套件 / 359 测试 / 0 失败。
+
+### 9.2 改内核的纪律
+
+| 规则 | 原因 |
+|---|---|
+| 改 `src/cats_net/` 任何文件 → 先在本仓 commit + push | 主仓 `package.json` 锁的是本仓 main 分支 |
+| 不在主仓硬编码 gina-core 路径 | 用 `file:../gina-cats-net` 软链 |
+| 改 `exports` 子路径 → ADR 评审 | 破坏主仓 import 路径 |
+| 加新 capability → 同步更新本 README | 文档即真理源 |
+| commit author = `Berry.Su <berry_su2023@foxmail.com>` | 命名一致 |
+
+### 9.3 Tag 历史（2026-09-01 → 2026-09-02 6 阶段完工）
+
+| Tag | 内容 | 推 origin |
+|---|---|---|
+| `core-v0.2.0-hierarchical` | 层次激活扩散（C-1.1） | ✅ |
+| `core-v0.3.0-temporal` | 时序激活 + 时间衰减（C-1.2） | ✅ |
+| `core-v0.4.0-learning` | 概念自学习 + CooccurrenceTracker（C-1.3） | ✅ |
+| `core-v0.5.0-editor` | 编辑 API + salience + softDelete（C-1.4） | ✅ |
+| `core-v0.6.0` | C-2.7 阶段二 import 迁移 + 8 大层进 CATS-Net | ✅ |
+| `core-v0.7.0` | C-2.7 阶段二（主仓 import 全切到 @berrysu/gina-core） | ✅ |
+
+### 9.4 CI / 自动化
+
+主仓 `Berry-su/GINA` 的 ci.yml（ADR-016）会拉本仓跑测试（`pnpm test` → 包含本仓 359 测试）。
+
+**修 CI 红**：先在本仓复现 + 修，再 push，**不要**反序。
+
+### 9.5 跟主仓的"消费"姿势
+
+```js
+// 推荐：按子路径 import（tree-shaking 生效）
+import { CatsNet } from '@berrysu/gina-core/cats_net'
+import { MemoryManager } from '@berrysu/gina-core/memory'
+
+// 不推荐：import 整个包（无 tree-shaking）
+// import * as core from '@berrysu/gina-core'
+```
+
+### 9.6 故障排查
+
+| 症状 | 解法 |
+|---|---|
+| 主仓 `pnpm install` 拉不到本仓 | 检查 `package.json` 的 `file:../gina-cats-net` 路径 |
+| 软链断了 | `rm -rf node_modules/@berrysu && pnpm install` |
+| 主仓跑测试报 import 错 | 跑本仓 `pnpm test` 验证 API 还在 |
+| 8 大层 hot path 挂了 | 检查 `src/cats_net/integration/l*.js`（在主仓）是否调用了本仓废弃 API |
+
+---
+
+*README 维护：gina-coder / gina-platform 9-02 落地 · 下次更新见 [GitHub Releases](https://github.com/Berry-su/gina-cats-net/releases)*
