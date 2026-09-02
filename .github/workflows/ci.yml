@@ -1,0 +1,99 @@
+# GINA 内核仓 CI · push / PR 触发
+# 设计：ADR-016-CICD-Pipeline_2026-09-02.md §3.1 / D3
+# 必跑：pnpm test（359 测试 · cats-net 9 大子目录）
+# 附加：auto-tag patch（main push 时自动 bump + tag push）
+name: GINA Core CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: core-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10.34.5'
+
+jobs:
+  test:
+    name: pnpm test（359 测试 · 16 套件）
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: pnpm test（node --test tests/）
+        run: pnpm test
+
+      - name: pnpm test:cats-net（核心套件显式跑）
+        run: pnpm test:cats-net
+
+  auto-tag:
+    # 仅 main 分支 push 触发（PR 触发时跳过，避免给 fork 自动打 tag）
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    name: auto-tag patch（main push → core-v0.X.Y+1）
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Read current version
+        id: version
+        run: |
+          CURRENT=$(node -p "require('./package.json').version")
+          echo "current=$CURRENT"
+          # bump patch: 0.1.0 → 0.1.1
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+          NEW_PATCH=$((PATCH + 1))
+          NEW_VERSION="${MAJOR}.${MINOR}.${NEW_PATCH}"
+          echo "new=$NEW_VERSION"
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        run: |
+          node -e "
+          const fs = require('fs');
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          pkg.version = '${{ steps.version.outputs.new_version }}';
+          fs.writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          console.log('bumped to', pkg.version);
+          "
+
+      - name: Commit + push tag
+        run: |
+          git config user.name "gina-platform"
+          git config user.email "gina-platform@berrysu.local"
+          git add package.json
+          git commit -m "chore(core): auto-bump patch → ${{ steps.version.outputs.new_version }} [skip ci]"
+          git tag "core-v${{ steps.version.outputs.new_version }}"
+          git push origin main
+          git push origin "core-v${{ steps.version.outputs.new_version }}"
